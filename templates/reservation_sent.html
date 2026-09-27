@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{ t('res_sent_title') }}{% endblock %}
+
+{% block content %}
+<section class="res-sent">
+    <div class="container">
+        <div class="res-sent-card">
+            <span class="res-sent-mark"><i class="bi bi-check-lg"></i></span>
+
+            <h1 class="res-sent-title">{{ t('res_sent_title') }}</h1>
+            <p class="res-sent-lead">{{ t('res_sent_lead') }}</p>
+
+            <p class="res-sent-summary">
+                <i class="bi bi-calendar-heart"></i>
+                <span>{{ t('res_sent_details') }}:</span>
+                <span dir="ltr">{{ handoff.summary }}</span>
+            </p>
+
+            {# The WhatsApp step. main.js follows this link automatically a
+               moment after the page paints - same-tab navigation, so no
+               pop-up blocker gets in the way - and the button stays as the
+               fallback for anyone it does not work for. #}
+            <a id="waHandoff" class="btn btn-whatsapp btn-lg"
+               href="{{ handoff.url }}" target="_blank" rel="noopener">
+                <i class="bi bi-whatsapp"></i> {{ t('res_sent_whatsapp') }}
+            </a>
+
+            <p class="res-sent-note js-only" id="waOpening">{{ t('res_sent_opening') }}</p>
+            <p class="res-sent-note">{{ t('res_sent_manual') }}</p>
+
+            <hr class="res-sent-rule">
+
+            <p class="res-sent-note">{{ t('res_sent_or_call') }}</p>
+            <div class="res-sent-actions">
+                <a class="btn btn-outline-burgundy" href="tel:{{ r.mobile_tel or r.phone_tel }}">
+                    <i class="bi bi-telephone-fill"></i> {{ r.mobile_display or r.phone_display }}
+                </a>
+                <a class="btn btn-outline-burgundy" href="{{ url_for('index') }}">
+                    <i class="bi bi-house-door"></i> {{ t('back_home') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Open WhatsApp with the message already written. Deliberately delayed a
+// beat so the customer sees that the booking was received first - going
+// straight to WhatsApp reads as if the form failed and threw them out.
+(function () {
+    var link = document.getElementById('waHandoff');
+    if (!link) return;
+    window.setTimeout(function () {
+        window.location.href = link.href;
+    }, 1400);
+})();
+</script>
+{% endblock %}

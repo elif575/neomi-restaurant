@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+{% block title %}{{ t('brand_name') }}{% endblock %}
+
+{% block content %}
+{# ── Hero: atmosphere video, because the visit is what we're selling ──── #}
+<section class="hero">
+    {# The clip is ~5 MB. main.js attaches it only on wider screens and when
+       the browser is not reporting a metered/slow connection; everyone else
+       gets the poster, which is a real atmosphere photo. #}
+    <video class="hero-video" autoplay muted loop playsinline preload="none"
+           data-src="{{ url_for('static', filename='images/video/hero-loop.mp4') }}"
+           poster="{{ url_for('static', filename='images/atmosphere/family-table-1280.webp') }}"></video>
+    <div class="hero-scrim"></div>
+
+    <div class="hero-inner container">
+        <img src="{{ url_for('static', filename='images/brand/logo-badge-640.webp') }}"
+             alt="{{ t('brand_name') }}" class="hero-logo" width="132" height="132">
+        {# The three taglines plus the kosher badge, sitting directly under
+           the brand mark. They answer "what kind of place is this?" before
+           the headline gets a chance to. Order matters: kitchen first, then
+           what is on the plate, then the certification. #}
+        <ul class="hero-taglines">
+            <li class="tagline-chip"><i class="bi bi-house-heart-fill"></i> {{ t('brand_tagline') }}</li>
+            <li class="tagline-chip"><i class="bi bi-water"></i> {{ t('fish_tagline') }}</li>
+            <li class="tagline-chip"><i class="bi bi-fire"></i> {{ t('meat_tagline') }}</li>
+            <li class="tagline-chip is-kosher">
+                <a href="{{ url_for('kosher') }}"><i class="bi bi-patch-check-fill"></i> {{ t('kosher_badge') }}</a>
+            </li>
+        </ul>
+
+        <h1 class="hero-headline">{{ t('hero_headline') }}</h1>
+        <p class="hero-sub">{{ t('hero_sub') }}</p>
+
+        <div class="hero-cta">
+            <a href="{{ url_for('reservations_page') }}" class="btn btn-gold btn-lg">
+                <i class="bi bi-calendar-heart"></i> {{ t('hero_cta_reserve') }}
+            </a>
+            <a href="tel:{{ r.phone_tel }}" class="btn btn-outline-cream btn-lg">
+                <i class="bi bi-telephone-fill"></i> {{ t('hero_cta_call') }}
+            </a>
+        </div>
+
+        {% if open_now %}
+        <p class="hero-status is-open"><span class="status-dot"></span> {{ t('open_now') }}</p>
+        {% else %}
+        <p class="hero-status"><span class="status-dot"></span> {{ t('closed_now') }}</p>
+        {% endif %}
+    </div>
+
+    <a href="#trust" class="hero-scroll" aria-label="{{ t('hero_scroll') }}"><i class="bi bi-chevron-down"></i></a>
+</section>
+
+{# ── Trust strip: answers the three questions that decide the visit ───── #}
+<section class="trust" id="trust">
+    <div class="container">
+        <ul class="trust-list">
+            <li><a href="{{ url_for('kosher') }}"><i class="bi bi-patch-check-fill"></i> {{ t('trust_kosher') }}</a></li>
+            <li><i class="bi bi-fire"></i> {{ t('trust_authentic') }}</li>
+            <li><i class="bi bi-moon-stars-fill"></i> {{ t('trust_shabbat') }}</li>
+            <li><i class="bi bi-people-fill"></i> {{ t('trust_events') }}</li>
+        </ul>
+    </div>
+</section>
+
+{# ── Signature dish, told as a sequence. The Hebrew captions are baked
+     into these six frames by the designer, so they read in order. ─────── #}
+<section class="story" id="story">
+    <div class="container">
+        <header class="section-head text-center">
+            <p class="eyebrow">{{ t('story_eyebrow') }}</p>
+            <h2 class="section-title">{{ t('story_title') }}</h2>
+            <p class="section-lead">{{ t('story_intro') }}</p>
+        </header>
+    </div>
+
+    <div class="story-rail">
+        {% set frames = [
+            ('story-1-intro',   'story_1_alt'),
+            ('story-2-fish',    'story_2_alt'),
+            ('story-3-egg',     'story_3_alt'),
+            ('story-4-fries',   'story_4_alt'),
+            ('story-5-harissa', 'story_5_alt'),
+            ('story-6-full',    'story_6_alt')
+        ] %}
+        {% for slug, alt_key in frames %}
+        <figure class="story-frame reveal">
+            <img src="{{ url_for('static', filename='images/story/' ~ slug ~ '-480.webp') }}"
+                 srcset="{{ url_for('static', filename='images/story/' ~ slug ~ '-480.webp') }} 480w,
+                         {{ url_for('static', filename='images/story/' ~ slug ~ '-960.webp') }} 960w"
+                 sizes="(max-width: 700px) 78vw, 30vw"
+                 alt="{{ t(alt_key) }}" loading="lazy" decoding="async"
+                 width="480" height="600">
+        </figure>
+        {% endfor %}
+    </div>
+
+    <div class="container text-center">
+        <a href="{{ url_for('reservations_page') }}" class="btn btn-burgundy btn-lg mt-4">{{ t('story_cta') }}</a>
+    </div>
+</section>
+
+{# ── Salatim: abundance is what turns a table for 2 into a table for 8 ── #}
+<section class="salatim" id="salatim">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-6">
+                <p class="eyebrow">{{ t('salatim_eyebrow') }}</p>
+                <h2 class="section-title">{{ t('salatim_title') }}</h2>
+                <p class="body-lead">{{ t('salatim_text') }}</p>
+
+                <div class="table-open-card mt-3 mb-0">
+                    <div class="table-open-text">
+                        <h2>{{ t('table_open_title') }}</h2>
+                        <p>{{ t('table_open_text') }}</p>
+                    </div>
+                    <span class="table-open-price">{{ t('table_open_price') }}</span>
+                </div>
+
+                <div class="salatim-thumbs">
+                    {% for slug, alt_key in [('matbucha','salatim_alt_matbucha'), ('salatim-spread','salatim_alt_spread'), ('eggplant-salad','salatim_alt_eggplant')] %}
+                    <img src="{{ url_for('static', filename='images/dishes/' ~ slug ~ '-480.webp') }}"
+                         alt="{{ t(alt_key) }}" loading="lazy" decoding="async" width="120" height="150">
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <figure class="framed-photo">
+                    <img src="{{ url_for('static', filename='images/dishes/salatim-overhead-480.webp') }}"
+                         srcset="{{ url_for('static', filename='images/dishes/salatim-overhead-480.webp') }} 480w,
+                                 {{ url_for('static', filename='images/dishes/salatim-overhead-960.webp') }} 960w"
+                         sizes="(max-width: 992px) 92vw, 46vw"
+                         alt="{{ t('salatim_alt_overhead') }}" loading="lazy" decoding="async"
+                         width="960" height="1200">
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ── Our story: Neomi is a real person, and we have her portrait ──────── #}
+<section class="about" id="about">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-6 order-lg-2">
+                <p class="eyebrow">{{ t('about_eyebrow') }}</p>
+                <h2 class="section-title">{{ t('about_title') }}</h2>
+                <p class="body-lead">{{ t('about_p1') }}</p>
+                <p class="body-lead">{{ t('about_p2') }}</p>
+                <a href="{{ url_for('about') }}" class="btn btn-outline-burgundy">
+                    {{ t('about_more') }} <i class="bi bi-arrow-left rtl-flip"></i>
+                </a>
+            </div>
+
+            <div class="col-lg-6 order-lg-1">
+                <figure class="framed-photo portrait-photo">
+                    <img src="{{ url_for('static', filename='images/atmosphere/neomi-portrait-640.webp') }}"
+                         srcset="{{ url_for('static', filename='images/atmosphere/neomi-portrait-640.webp') }} 640w,
+                                 {{ url_for('static', filename='images/atmosphere/neomi-portrait-1280.webp') }} 1280w"
+                         sizes="(max-width: 992px) 92vw, 46vw"
+                         alt="{{ t('about_portrait_alt') }}" loading="lazy" decoding="async"
+                         width="1280" height="720">
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ── Atmosphere: the emotional close ──────────────────────────────────── #}
+<section class="atmos" id="atmosphere">
+    <div class="container">
+        <header class="section-head text-center">
+            <p class="eyebrow eyebrow-light">{{ t('atmos_eyebrow') }}</p>
+            <h2 class="section-title section-title-light">{{ t('atmos_title') }}</h2>
+            <p class="section-lead section-lead-light">{{ t('atmos_text') }}</p>
+        </header>
+
+        <div class="atmos-grid">
+            <figure class="atmos-tile atmos-tile-wide">
+                <img src="{{ url_for('static', filename='images/atmosphere/family-table-640.webp') }}"
+                     srcset="{{ url_for('static', filename='images/atmosphere/family-table-640.webp') }} 640w,
+                             {{ url_for('static', filename='images/atmosphere/family-table-1280.webp') }} 1280w"
+                     sizes="(max-width: 768px) 94vw, 62vw"
+                     alt="{{ t('atmos_family_alt') }}" loading="lazy" decoding="async"
+                     width="1280" height="720">
+            </figure>
+            <figure class="atmos-tile">
+                <img src="{{ url_for('static', filename='images/atmosphere/hands-passing-640.webp') }}"
+                     alt="{{ t('atmos_hands_alt') }}" loading="lazy" decoding="async" width="640" height="360">
+            </figure>
+            <figure class="atmos-tile">
+                <img src="{{ url_for('static', filename='images/atmosphere/serving-couscous-640.webp') }}"
+                     alt="{{ t('atmos_couscous_alt') }}" loading="lazy" decoding="async" width="640" height="360">
+            </figure>
+        </div>
+
+        <div class="text-center">
+            <a href="{{ url_for('gallery') }}" class="btn btn-outline-cream btn-lg mt-4">{{ t('gallery_title') }}</a>
+        </div>
+    </div>
+</section>
+
+{# ── Events: the high-value bookings ─────────────────────────────────── #}
+<section class="events" id="events">
+    <div class="container">
+        <div class="events-card">
+            <div class="row align-items-center gy-4">
+                <div class="col-lg-7">
+                    <p class="eyebrow">{{ t('events_eyebrow') }}</p>
+                    <h2 class="section-title">{{ t('events_title') }}</h2>
+                    {# |safe because events_text carries a <strong> around the
+                       guest capacity - see the note beside it in i18n.py. #}
+                    <p class="body-lead">{{ t('events_text')|safe }}</p>
+                    <a href="{{ whatsapp_url(t('events_eyebrow')) }}" target="_blank" rel="noopener"
+                       class="btn btn-burgundy btn-lg">
+                        <i class="bi bi-whatsapp"></i> {{ t('events_cta') }}
+                    </a>
+                </div>
+                <div class="col-lg-5">
+                    <figure class="framed-photo mb-0">
+                        <img src="{{ url_for('static', filename='images/dishes/poisson-with-salatim-480.webp') }}"
+                             alt="{{ t('salatim_alt_spread') }}" loading="lazy" decoding="async"
+                             width="480" height="600">
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ── Featured menu items, only once the menu exists ──────────────────── #}
+{% if featured %}
+<section class="featured">
+    <div class="container">
+        <header class="section-head text-center">
+            <p class="eyebrow">{{ t('nav_menu') }}</p>
+            <h2 class="section-title">{{ t('story_eyebrow') }}</h2>
+        </header>
+
+        <div class="row g-4">
+            {% for item in featured %}
+            <div class="col-md-6 col-lg-4">
+                <article class="dish-card">
+                    {% if item.image_path %}
+                    <div class="dish-img-wrapper">
+                        <img src="{{ url_for('static', filename=item.image_path) }}"
+                             alt="{{ item.name_he or item.name }}" class="dish-img" loading="lazy">
+                    </div>
+                    {% endif %}
+                    <div class="dish-info">
+                        <h3 class="dish-name">{{ item.display_name(lang) }}</h3>
+                        {% set alt_name = item.name if lang == 'he' else item.name_he %}
+                        {% if alt_name %}<p class="dish-name-alt">{{ alt_name }}</p>{% endif %}
+                        {% set desc = item.display_description(lang) %}
+                        {% if desc %}<p class="dish-desc">{{ desc }}</p>{% endif %}
+                        <span class="dish-price">{{ t('currency') }} {{ "%.0f"|format(item.price) }}</span>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('menu') }}" class="btn btn-outline-burgundy btn-lg">{{ t('menu_title') }}</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ── Visit: hours, address, one tap to navigate or call ──────────────── #}
+<section class="visit" id="visit">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-6">
+                <h2 class="section-title section-title-light">{{ t('hours_title') }}</h2>
+                <table class="hours-table">
+                    <tbody>
+                        {% for h in hours %}
+                        <tr {% if not h.ranges %}class="is-closed"{% endif %}>
+                            <th scope="row">{{ day_name(h.day_of_week) }}</th>
+                            <td>
+                                {% if not h.ranges %}
+                                {{ t('hours_closed') }}
+                                {% else %}
+                                {# One line per service window: lunch and dinner
+                                   are separate sittings, not one long stretch.
+                                   dir=ltr because a time range is bidi-neutral
+                                   and would render back-to-front in RTL. #}
+                                {% for open_t, close_t in h.ranges %}
+                                <span class="hours-range" dir="ltr">{{ open_t }}–{{ close_t }}</span>
+                                {% endfor %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p class="shabbat-note"><i class="bi bi-moon-stars"></i> {{ t('hours_shabbat_note') }}</p>
+            </div>
+
+            <div class="col-lg-6">
+                <h2 class="section-title section-title-light">{{ t('location_title') }}</h2>
+                <p class="visit-address"><i class="bi bi-geo-alt-fill"></i>
+                    {{ r.address_he if lang == 'he' else r.address_fr }}</p>
+
+                <div class="visit-actions">
+                    <a class="btn btn-gold btn-lg" href="{{ waze_url }}" target="_blank" rel="noopener">
+                        <i class="bi bi-signpost-split"></i> {{ t('nav_waze') }}
+                    </a>
+                    <a class="btn btn-outline-cream btn-lg" href="{{ gmaps_url }}" target="_blank" rel="noopener">
+                        <i class="bi bi-map"></i> {{ t('nav_gmaps') }}
+                    </a>
+                </div>
+
+                <div class="visit-contact">
+                    <a href="tel:{{ r.phone_tel }}"><i class="bi bi-telephone-fill"></i> {{ r.phone_display }}</a>
+                    {% if r.mobile_tel %}
+                    <a href="tel:{{ r.mobile_tel }}"><i class="bi bi-phone-fill"></i> {{ r.mobile_display }}</a>
+                    {% endif %}
+                    <a href="{{ whatsapp_url() }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> {{ t('whatsapp_us') }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Werkzeug==3.0.1
+
+# Production web server. Flask's own server is for development only - it
+# handles one request at a time and is not hardened for public traffic.
+#     gunicorn --bind 0.0.0.0:$PORT app:app
+gunicorn==21.2.0
+
+# Media pipeline (tools/build_assets.py only, not needed to serve the site).
+# pillow-heif adds HEIC support for the photos shot on an iPhone.
+# imageio-ffmpeg bundles a static ffmpeg for the video step, so no apt and
+# no root are needed; a system ffmpeg is used instead when one exists.
+Pillow>=10.2.0
+pillow-heif>=0.15.0
+imageio-ffmpeg>=0.4.9

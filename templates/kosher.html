@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ t('kosher_title') }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+    <img src="{{ url_for('static', filename='images/dishes/salatim-overhead-960.webp') }}"
+         alt="" class="page-head-photo" aria-hidden="true">
+    <div class="container">
+        <p class="bsd">{{ t('bsd') }}</p>
+        <h1 class="page-title">{{ t('kosher_title') }}</h1>
+        <p class="page-lead">{{ t('kosher_intro') }}</p>
+    </div>
+</header>
+
+<section class="kosher-section">
+    <div class="container">
+        <div class="row align-items-start gy-4">
+
+            {# The certificate itself. Clicking opens the largest variant,
+               because the small print is the whole point of showing it. #}
+            <div class="col-lg-7">
+                {% if widths %}
+                <a class="kosher-cert" target="_blank" rel="noopener"
+                   href="{{ url_for('static', filename='images/brand/kosher-certificate-' ~ widths[-1] ~ '.webp') }}"
+                   aria-label="{{ t('kosher_view_full') }}">
+                    <img src="{{ url_for('static', filename='images/brand/kosher-certificate-' ~ widths[0] ~ '.webp') }}"
+                         srcset="{% for w in widths %}{{ url_for('static', filename='images/brand/kosher-certificate-' ~ w ~ '.webp') }} {{ w }}w{{ ', ' if not loop.last }}{% endfor %}"
+                         sizes="(max-width: 992px) 92vw, 55vw"
+                         alt="{{ t('kosher_alt') }}" width="960" height="1440"
+                         loading="eager" decoding="async">
+                    <span class="kosher-zoom"><i class="bi bi-arrows-fullscreen"></i> {{ t('kosher_view_full') }}</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-5">
+                <div class="kosher-facts">
+                    <dl>
+                        <dt>{{ t('kosher_supervision_label') }}</dt>
+                        <dd>{{ r.kosher_supervision_he if lang == 'he' else r.kosher_supervision_fr }}</dd>
+
+                        <dt>{{ t('kosher_holder_label') }}</dt>
+                        <dd>{{ r.kosher_holder_he if lang == 'he' else r.kosher_holder_fr }}</dd>
+
+                        <dt>{{ t('kosher_type_label') }}</dt>
+                        <dd>{{ r.kosher_type_he if lang == 'he' else r.kosher_type_fr }}</dd>
+
+                        {% if valid_from %}
+                        <dt>{{ t('kosher_valid_from_label') }}</dt>
+                        <dd><span dir="ltr">{{ valid_from.strftime('%d/%m/%Y') }}</span></dd>
+                        {% endif %}
+
+                        {% if valid_until %}
+                        <dt>{{ t('kosher_valid_label') }}</dt>
+                        <dd><span dir="ltr">{{ valid_until.strftime('%d/%m/%Y') }}</span></dd>
+                        {% endif %}
+                    </dl>
+
+                    {# An expired certificate is stated, never quietly shown
+                       as if it were current. #}
+                    {% if expired %}
+                    <p class="kosher-expired"><i class="bi bi-exclamation-triangle-fill"></i>
+                        {{ t('kosher_expired') }}</p>
+                    {% else %}
+                    <p class="kosher-valid"><i class="bi bi-patch-check-fill"></i>
+                        {{ t('kosher_badge') }}</p>
+                    {% endif %}
+
+                    <p class="kosher-questions">{{ t('kosher_questions') }}</p>
+
+                    <div class="kosher-actions">
+                        <a class="btn btn-burgundy" href="tel:{{ r.mobile_tel or r.phone_tel }}">
+                            <i class="bi bi-telephone-fill"></i> {{ t('call_us') }}
+                        </a>
+                        <a class="btn btn-outline-burgundy" href="{{ url_for('menu') }}">
+                            <i class="bi bi-card-list"></i> {{ t('menu_title') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

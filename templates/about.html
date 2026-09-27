@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}{{ t('about_page_title') }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+    <img src="{{ url_for('static', filename='images/atmosphere/grandmother-kitchen-1280.webp') }}"
+         alt="" class="page-head-photo" aria-hidden="true">
+    <div class="container">
+        <p class="eyebrow eyebrow-light">{{ t('about_eyebrow') }}</p>
+        <h1 class="page-title">{{ t('about_page_title') }}</h1>
+        <p class="page-lead">{{ t('about_page_lead') }}</p>
+    </div>
+</header>
+
+{# The story as chapters. Each is one photo and one idea; the photo side
+   alternates so the eye is walked down the page rather than down a column.
+   `flip` drives that with the order-lg-* utilities, so RTL and LTR both get
+   the same alternation without a second rule. #}
+<section class="about-page">
+    <div class="container">
+
+        {% macro chapter(key, image, alt_key, flip=false, sizes='(max-width: 992px) 92vw, 46vw',
+                         width=1280, height=720, srcset='', cta_url='', cta_key='',
+                         cta_blank=false, address=false, text2=false) %}
+        <article class="about-chapter row align-items-center gy-4">
+            <div class="col-lg-6 {{ 'order-lg-2' if flip }}">
+                <p class="eyebrow">{{ t('about_' ~ key ~ '_eyebrow') }}</p>
+                <h2 class="section-title">{{ t('about_' ~ key ~ '_title') }}</h2>
+                {# |safe: this copy is authored in i18n.py, never typed by a
+                   visitor, and one chapter bolds its guest capacity. #}
+                <p class="body-lead">{{ t('about_' ~ key ~ '_text')|safe }}</p>
+                {% if text2 %}<p class="body-lead">{{ t('about_' ~ key ~ '_text2')|safe }}</p>{% endif %}
+
+                {# The street address is rendered, never written into the copy:
+                   content.py stays the one place it is spelled out. #}
+                {% if address %}
+                <p class="about-address"><i class="bi bi-geo-alt-fill"></i>
+                    {{ r.address_he if lang == 'he' else r.address_fr }}</p>
+                <div class="about-map-links">
+                    <a class="btn btn-outline-burgundy btn-sm" href="{{ waze_url }}" target="_blank" rel="noopener">
+                        <i class="bi bi-signpost-split"></i> {{ t('nav_waze') }}
+                    </a>
+                    <a class="btn btn-outline-burgundy btn-sm" href="{{ gmaps_url }}" target="_blank" rel="noopener">
+                        <i class="bi bi-map"></i> {{ t('nav_gmaps') }}
+                    </a>
+                </div>
+                {% endif %}
+
+                {% if cta_url %}
+                <a href="{{ cta_url }}" class="btn btn-outline-burgundy"
+                   {% if cta_blank %}target="_blank" rel="noopener"{% endif %}>{{ t(cta_key) }}</a>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-6 {{ 'order-lg-1' if flip }}">
+                <figure class="framed-photo portrait-photo reveal mb-0">
+                    <img src="{{ url_for('static', filename=image) }}"
+                         {% if srcset %}srcset="{{ srcset }}"{% endif %}
+                         sizes="{{ sizes }}"
+                         alt="{{ t(alt_key) }}" loading="lazy" decoding="async"
+                         width="{{ width }}" height="{{ height }}">
+                </figure>
+            </div>
+        </article>
+        {% endmacro %}
+
+        {# Two paragraphs: the kitchen in Tunis, then what became of it. #}
+        {{ chapter('ch1', 'images/atmosphere/neomi-portrait-640.webp', 'about_portrait_alt',
+                   width=640, height=360, text2=true,
+                   srcset=url_for('static', filename='images/atmosphere/neomi-portrait-640.webp') ~ ' 640w, '
+                        ~ url_for('static', filename='images/atmosphere/neomi-portrait-1280.webp') ~ ' 1280w') }}
+
+        {# Not one of the story/ tiles: those carry captions burnt into the
+           image for the homepage rail, which reads as a stray sentence here. #}
+        {{ chapter('ch2', 'images/dishes/matbucha-480.webp', 'salatim_alt_matbucha', flip=true,
+                   width=480, height=600,
+                   srcset=url_for('static', filename='images/dishes/matbucha-480.webp') ~ ' 480w, '
+                        ~ url_for('static', filename='images/dishes/matbucha-960.webp') ~ ' 960w') }}
+
+        {# Pull-quote: the one sentence the whole page is really about. #}
+        <figure class="about-quote reveal">
+            <blockquote>{{ t('about_quote') }}</blockquote>
+        </figure>
+
+        {{ chapter('ch3', 'images/brand/kosher-certificate-480.webp', 'kosher_alt',
+                   width=480, height=720,
+                   srcset=url_for('static', filename='images/brand/kosher-certificate-480.webp') ~ ' 480w, '
+                        ~ url_for('static', filename='images/brand/kosher-certificate-960.webp') ~ ' 960w',
+                   cta_url=url_for('kosher'), cta_key='about_ch3_cta') }}
+
+        {{ chapter('ch4', 'images/real/real-poisson-table-480.webp', 'about_table_alt', flip=true,
+                   width=480, height=853, address=true,
+                   srcset=url_for('static', filename='images/real/real-poisson-table-480.webp') ~ ' 480w, '
+                        ~ url_for('static', filename='images/real/real-poisson-table-960.webp') ~ ' 960w') }}
+
+        {# Events only. There is no Friday/Shabbat takeaway - see the note
+           in i18n.py before adding any. #}
+        {{ chapter('ch5', 'images/atmosphere/serving-couscous-640.webp', 'about_events_alt',
+                   width=640, height=360,
+                   srcset=url_for('static', filename='images/atmosphere/serving-couscous-640.webp') ~ ' 640w, '
+                        ~ url_for('static', filename='images/atmosphere/serving-couscous-1280.webp') ~ ' 1280w',
+                   cta_url=whatsapp_url(t('about_ch5_eyebrow')), cta_key='about_ch5_cta',
+                   cta_blank=true) }}
+
+    </div>
+</section>
+
+{# The close: the page exists to end in a booking, not in a nice feeling. #}
+<section class="about-close">
+    <div class="container text-center">
+        <h2 class="section-title section-title-light">{{ t('about_close_title') }}</h2>
+        <p class="section-lead section-lead-light">{{ t('about_close_text') }}</p>
+        <div class="about-close-actions">
+            <a href="{{ url_for('reservations_page') }}" class="btn btn-gold btn-lg">
+                <i class="bi bi-calendar-heart"></i> {{ t('hero_cta_reserve') }}
+            </a>
+            <a href="{{ url_for('menu') }}" class="btn btn-outline-cream btn-lg">
+                <i class="bi bi-card-list"></i> {{ t('menu_title') }}
+            </a>
+            <a href="tel:{{ r.mobile_tel or r.phone_tel }}" class="btn btn-outline-cream btn-lg">
+                <i class="bi bi-telephone-fill"></i> {{ t('call_us') }}
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

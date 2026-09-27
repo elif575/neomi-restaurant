@@ -1,0 +1,64 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_title %}Reservations{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Reservations</h2>
+    <div>
+        <a href="{{ url_for('admin_reservations') }}" class="btn btn-sm btn-{{ 'primary' if not current_filter else 'outline-primary' }}">All</a>
+        <a href="{{ url_for('admin_reservations', status='pending') }}" class="btn btn-sm btn-{{ 'primary' if current_filter == 'pending' else 'outline-primary' }}">Pending</a>
+        <a href="{{ url_for('admin_reservations', status='confirmed') }}" class="btn btn-sm btn-{{ 'primary' if current_filter == 'confirmed' else 'outline-primary' }}">Confirmed</a>
+        <a href="{{ url_for('admin_reservations', status='cancelled') }}" class="btn btn-sm btn-{{ 'primary' if current_filter == 'cancelled' else 'outline-primary' }}">Cancelled</a>
+    </div>
+</div>
+
+{% if reservations %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Party</th>
+                <th>Notes</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for res in reservations %}
+            <tr>
+                <td>{{ res.id }}</td>
+                <td>{{ res.customer_name }}</td>
+                <td>{{ res.phone }}</td>
+                <td>{{ res.date.strftime('%m/%d/%Y') }}</td>
+                <td>{{ res.time }}</td>
+                <td>{{ res.party_size }}</td>
+                <td><small>{{ res.notes or '-' }}</small></td>
+                <td>
+                    <span class="badge bg-{{ 'warning' if res.status == 'pending' else 'success' if res.status == 'confirmed' else 'danger' }}">
+                        {{ res.status }}
+                    </span>
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('update_reservation_status', res_id=res.id) }}" class="d-inline">
+                        <select name="status" class="form-select form-select-sm d-inline-block" style="width:auto;" onchange="this.form.submit()">
+                            <option value="">Change...</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted">No reservations found.</p>
+{% endif %}
+{% endblock %}

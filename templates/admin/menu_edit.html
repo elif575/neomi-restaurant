@@ -1,0 +1,152 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_title %}Menu Management{% endblock %}
+
+{% block admin_content %}
+{# Category labels mirror the printed menu sections. #}
+{% set cat_labels = {
+    'appetizer': 'מנות ראשונות · Entrées',
+    'main': 'עיקריות · Plats',
+    'grill': 'בשרים · Grillades',
+    'fish': 'דגים · Poissons',
+    'drink': 'שתייה · Boissons',
+    'dessert': 'קינוחים · Desserts'
+} %}
+
+<h2 class="mb-4">Menu Management</h2>
+
+<!-- Add New Item -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Add New Item</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('admin_menu_add') }}" enctype="multipart/form-data">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label small">Name (French / Latin)</label>
+                    <input type="text" class="form-control" name="name" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small">שם בעברית</label>
+                    <input type="text" class="form-control" name="name_he" dir="rtl">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small">Section</label>
+                    <select class="form-select" name="category" required>
+                        {% for cat in categories %}
+                        <option value="{{ cat }}">{{ cat_labels.get(cat, cat|capitalize) }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label small">Description (French)</label>
+                    <textarea class="form-control" name="description" rows="2"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small">תיאור בעברית</label>
+                    <textarea class="form-control" name="description_he" rows="2" dir="rtl"></textarea>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label small">Price (₪)</label>
+                    <input type="number" class="form-control" name="price" step="1" min="0" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small">Order</label>
+                    <input type="number" class="form-control" name="sort_order" value="0" step="1">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small">Photo</label>
+                    <input type="file" class="form-control" name="image" accept="image/*">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_available" checked>
+                            <label class="form-check-label small">Available</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_featured">
+                            <label class="form-check-label small">Featured</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Add Item</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Current Menu Items -->
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">Current Menu ({{ items|length }} items)</h5></div>
+    <div class="card-body">
+        {% for cat in categories %}
+        {% set cat_items = items | selectattr('category', 'equalto', cat) | list %}
+        {% if cat_items %}
+        <h6 class="mt-3 mb-2 text-uppercase text-muted">{{ cat_labels.get(cat, cat) }}</h6>
+        <div class="table-responsive mb-4">
+            <table class="table table-sm table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width:60px;">Order</th>
+                        <th>French</th>
+                        <th>עברית</th>
+                        <th>Description (FR)</th>
+                        <th>תיאור</th>
+                        <th style="width:90px;">Section</th>
+                        <th style="width:80px;">₪</th>
+                        <th style="width:50px;">Av.</th>
+                        <th style="width:50px;">Ft.</th>
+                        <th style="width:130px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cat_items %}
+                    <tr>
+                        <form method="POST" action="{{ url_for('admin_menu_edit', item_id=item.id) }}"
+                              enctype="multipart/form-data" id="edit-{{ item.id }}">
+                            <td><input type="number" class="form-control form-control-sm" name="sort_order"
+                                       value="{{ item.sort_order or 0 }}"></td>
+                            <td><input type="text" class="form-control form-control-sm" name="name"
+                                       value="{{ item.name }}"></td>
+                            <td><input type="text" class="form-control form-control-sm" name="name_he"
+                                       value="{{ item.name_he or '' }}" dir="rtl"></td>
+                            <td><input type="text" class="form-control form-control-sm" name="description"
+                                       value="{{ item.description or '' }}"></td>
+                            <td><input type="text" class="form-control form-control-sm" name="description_he"
+                                       value="{{ item.description_he or '' }}" dir="rtl"></td>
+                            <td>
+                                <select class="form-select form-select-sm" name="category">
+                                    {% for c in categories %}
+                                    <option value="{{ c }}" {% if item.category == c %}selected{% endif %}>{{ c }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td><input type="number" class="form-control form-control-sm" name="price"
+                                       value="{{ item.price|round(0)|int }}" step="1"></td>
+                            <td class="text-center"><input class="form-check-input" type="checkbox"
+                                       name="is_available" {% if item.is_available %}checked{% endif %}></td>
+                            <td class="text-center"><input class="form-check-input" type="checkbox"
+                                       name="is_featured" {% if item.is_featured %}checked{% endif %}></td>
+                            <td>
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Save</button>
+                        </form>
+                                <form method="POST" action="{{ url_for('admin_menu_delete', item_id=item.id) }}"
+                                      class="d-inline" onsubmit="return confirm('Delete {{ item.name }}?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Del</button>
+                                </form>
+                            </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

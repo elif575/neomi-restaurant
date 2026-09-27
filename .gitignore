@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+
+# Generated at first run; keeping it out of git means sessions are not
+# forgeable from the repository.
+instance/secret_key
+
+# SQLite database
+instance/*.db
+
+.venv/
+venv/
+.DS_Store

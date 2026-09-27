@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}{{ t('order_title') }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+    <img src="{{ url_for('static', filename='images/dishes/poisson-plated-960.webp') }}"
+         alt="" class="page-head-photo" aria-hidden="true">
+    <div class="container">
+        <h1 class="page-title">{{ t('order_title') }}</h1>
+        <p class="page-lead">{{ t('menu_intro') }}</p>
+    </div>
+</header>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-7">
+                {% for cat in category_order %}
+                {% if categories.get(cat) %}
+                <section class="order-category">
+                    <h2 class="menu-category-title">{{ t('cat_' ~ cat) }}</h2>
+
+                    {% for item in categories[cat] %}
+                    <article class="order-item">
+                        <div class="order-item-info">
+                            <h3 class="order-item-name">{{ item.display_name(lang) }}</h3>
+                            {% set desc = item.display_description(lang) %}
+                            {% if desc %}<p class="order-item-desc">{{ desc }}</p>{% endif %}
+                        </div>
+                        <div class="order-item-actions">
+                            <span class="order-item-price">{{ t('currency') }} {{ "%.0f"|format(item.price) }}</span>
+                            <button class="btn btn-gold btn-sm" type="button"
+                                    data-add-to-cart
+                                    data-id="{{ item.id }}"
+                                    data-name="{{ item.display_name(lang) }}"
+                                    data-price="{{ item.price }}">
+                                <i class="bi bi-plus-lg"></i> {{ t('order_add') }}
+                            </button>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </section>
+                {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="col-lg-5">
+                <aside class="cart-panel">
+                    <h2 class="cart-title"><i class="bi bi-basket3-fill"></i> {{ t('order_cart') }}</h2>
+
+                    <div id="cart-items"
+                         data-empty="{{ t('order_empty') }}"
+                         data-required="{{ t('res_error') }}"
+                         data-failed="{{ t('res_error') }}"></div>
+
+                    <div id="cart-summary" hidden>
+                        <hr>
+                        <div class="cart-total-row">
+                            <span>{{ t('order_total') }}</span>
+                            <span id="cart-total">{{ t('currency') }} 0</span>
+                        </div>
+                    </div>
+
+                    <div id="checkout-form" hidden>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="form-label" for="customer_name">{{ t('res_name') }} *</label>
+                            <input type="text" class="form-control" id="customer_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="phone">{{ t('res_phone') }} *</label>
+                            <input type="tel" class="form-control" id="phone" inputmode="tel" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="order_type">{{ t('order_title') }}</label>
+                            <select class="form-select" id="order_type">
+                                <option value="pickup">{{ t('order_pickup') }}</option>
+                                <option value="delivery">{{ t('order_delivery') }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="address-group" hidden>
+                            <label class="form-label" for="address">{{ t('order_delivery') }}</label>
+                            <textarea class="form-control" id="address" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="notes">{{ t('res_notes') }}</label>
+                            <textarea class="form-control" id="notes" rows="2"></textarea>
+                        </div>
+                        <button class="btn btn-burgundy btn-lg w-100" type="button" id="submit-order">
+                            <i class="bi bi-check-circle"></i> {{ t('order_submit') }}
+                        </button>
+                    </div>
+
+                    <p class="cart-note mt-3"><i class="bi bi-telephone"></i>
+                        <a href="tel:{{ r.phone_tel }}">{{ r.phone_display }}</a>
+                    </p>
+                </aside>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

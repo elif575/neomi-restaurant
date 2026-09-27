@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ t('brand_name') }}{% endblock %} | {{ t('brand_tagline') }} {{ t('site_title_suffix') }}</title>
+    <meta name="description" content="{{ t('meta_description') }}">
+
+    <meta property="og:title" content="{{ t('brand_name') }} — {{ t('brand_tagline') }}">
+    <meta property="og:description" content="{{ t('meta_description') }}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/real/real-poisson-table-960.webp', _external=True) }}">
+    <meta property="og:type" content="restaurant">
+    <meta name="theme-color" content="#5A1024">
+
+    {% if dir == 'rtl' %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    {% else %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% endif %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&family=Assistant:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    {# Marks JS as available so the scroll-reveal styles can hide content;
+       without this the photos are visible by default. #}
+    <script>document.documentElement.classList.add('js');</script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <a class="skip-link" href="#main">{{ t('skip_to_content') }}</a>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/brand/logo-badge-640.webp') }}"
+                     alt="{{ t('brand_name') }}" class="brand-logo" width="52" height="52">
+                <span class="brand-words">
+                    <span class="brand-text">{{ t('brand_name') }}</span>
+                    <span class="brand-sub">{{ t('brand_tagline') }}</span>
+                </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent"
+                    aria-label="{{ t('nav_home') }}">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">{{ t('nav_home') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('menu') }}">{{ t('nav_menu') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">{{ t('nav_about') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('kosher') }}">{{ t('nav_kosher') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('gallery') }}">{{ t('nav_gallery') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#events">{{ t('nav_events') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#visit">{{ t('nav_contact') }}</a></li>
+
+                    <li class="nav-item lang-switch">
+                        {% for code, meta in languages.items() %}
+                        <a href="{{ url_for('set_language', code=code) }}"
+                           class="lang-opt {{ 'is-active' if code == lang }}"
+                           lang="{{ code }}">{{ meta.short }}</a>
+                        {% endfor %}
+                    </li>
+
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-gold btn-sm" href="{{ url_for('reservations_page') }}">
+                            <i class="bi bi-calendar-heart"></i> {{ t('nav_reservations') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ t('gallery_close') }}"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <main id="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4">
+                    <img src="{{ url_for('static', filename='images/brand/logo-badge-640.webp') }}"
+                         alt="{{ t('brand_name') }}" class="footer-logo" width="88" height="88" loading="lazy">
+                    <p class="footer-about">{{ t('footer_about') }}</p>
+                    <a class="kosher-chip" href="{{ url_for('kosher') }}"><i class="bi bi-patch-check-fill"></i> {{ t('kosher_badge') }}</a>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="footer-heading">{{ t('footer_contact') }}</h5>
+                    <p><a href="tel:{{ r.phone_tel }}"><i class="bi bi-telephone-fill"></i> {{ r.phone_display }}</a></p>
+                    {% if r.mobile_tel %}
+                    <p><a href="tel:{{ r.mobile_tel }}"><i class="bi bi-phone-fill"></i> {{ r.mobile_display }}</a></p>
+                    {% endif %}
+                    <p><a href="{{ whatsapp_url() }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> {{ t('whatsapp_us') }}</a></p>
+                    <p><i class="bi bi-geo-alt-fill"></i> {{ r.address_he if lang == 'he' else r.address_fr }}</p>
+                    <div class="footer-map-links">
+                        <a class="btn btn-outline-gold btn-sm" href="{{ waze_url }}" target="_blank" rel="noopener">
+                            <i class="bi bi-signpost-split"></i> {{ t('nav_waze') }}
+                        </a>
+                        <a class="btn btn-outline-gold btn-sm" href="{{ gmaps_url }}" target="_blank" rel="noopener">
+                            <i class="bi bi-map"></i> {{ t('nav_gmaps') }}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="footer-heading">{{ t('footer_follow') }}</h5>
+                    <div class="social-links">
+                        {% if r.instagram %}<a href="{{ r.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a>{% endif %}
+                        {% if r.facebook %}<a href="{{ r.facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a>{% endif %}
+                        {% if r.tiktok %}<a href="{{ r.tiktok }}" target="_blank" rel="noopener" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>{% endif %}
+                        {% if not (r.instagram or r.facebook or r.tiktok) %}
+                        <!-- Social links appear once they are set in content.py -->
+                        {% endif %}
+                    </div>
+                    <p class="footer-shabbat mt-3"><i class="bi bi-moon-stars"></i> {{ t('hours_shabbat_note') }}</p>
+                </div>
+            </div>
+
+            <hr>
+            <nav class="footer-nav">
+                <a href="{{ url_for('menu') }}">{{ t('nav_menu') }}</a>
+                <a href="{{ url_for('about') }}">{{ t('nav_about') }}</a>
+                <a href="{{ url_for('kosher') }}">{{ t('nav_kosher') }}</a>
+                <a href="{{ url_for('gallery') }}">{{ t('nav_gallery') }}</a>
+                <a href="{{ url_for('reservations_page') }}">{{ t('nav_reservations') }}</a>
+                <a href="{{ url_for('order_page') }}">{{ t('nav_order') }}</a>
+                <a href="{{ url_for('index') }}#events">{{ t('nav_events') }}</a>
+            </nav>
+            <p class="footer-legal">
+                &copy; {{ current_year }} {{ t('brand_name') }} · {{ t('footer_rights') }}
+            </p>
+        </div>
+    </footer>
+
+    <!-- Mobile action bar: calling is the highest-intent action on a phone -->
+    <div class="mobile-bar d-lg-none">
+        <a href="tel:{{ r.mobile_tel or r.phone_tel }}" class="mobile-bar-item">
+            <i class="bi bi-telephone-fill"></i><span>{{ t('call_us') }}</span>
+        </a>
+        <a href="{{ url_for('reservations_page') }}" class="mobile-bar-item is-primary">
+            <i class="bi bi-calendar-heart"></i><span>{{ t('nav_reservations') }}</span>
+        </a>
+        <a href="{{ waze_url }}" target="_blank" rel="noopener" class="mobile-bar-item">
+            <i class="bi bi-signpost-split"></i><span>Waze</span>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

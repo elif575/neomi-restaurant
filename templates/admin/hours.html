@@ -1,0 +1,61 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_title %}Business Hours{% endblock %}
+
+{% block admin_content %}
+<h2 class="mb-2">Business Hours</h2>
+<p class="text-muted mb-4">
+    Two sittings a day. Leave the evening pair empty for a day that runs
+    straight through; tick "Closed" to close the day entirely.
+</p>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th colspan="2">Lunch</th>
+                        <th colspan="2">Dinner</th>
+                        <th>Closed</th>
+                    </tr>
+                    <tr class="text-muted small">
+                        <th></th>
+                        <th>Open</th><th>Close</th>
+                        <th>Open</th><th>Close</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set day_names = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
+                    {% for day in range(7) %}
+                    {% set h = hours|selectattr('day_of_week', 'equalto', day)|first if hours else none %}
+                    <tr>
+                        <td><strong>{{ day_names[day] }}</strong></td>
+                        {% for field, value in [
+                            ('open_' ~ day,   h.open_time   if h else none),
+                            ('close_' ~ day,  h.close_time  if h else none),
+                            ('open2_' ~ day,  h.open_time2  if h else none),
+                            ('close2_' ~ day, h.close_time2 if h else none)
+                        ] %}
+                        <td>
+                            <input type="time" class="form-control day-{{ day }}"
+                                   name="{{ field }}" id="{{ field }}"
+                                   value="{{ value or '' }}"
+                                   {% if h and h.is_closed %}disabled{% endif %}>
+                        </td>
+                        {% endfor %}
+                        <td>
+                            <input class="form-check-input" type="checkbox" name="closed_{{ day }}"
+                                {% if h and h.is_closed %}checked{% endif %}
+                                onchange="document.querySelectorAll('.day-{{ day }}').forEach(i => i.disabled = this.checked);">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">Save Hours</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

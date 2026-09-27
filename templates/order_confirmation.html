@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ t('order_confirmed_title') }}{% endblock %}
+
+{% block content %}
+<section class="py-5" style="padding-top: calc(var(--nav-h) + 3rem) !important;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="form-card text-center">
+                    <i class="bi bi-check-circle-fill" style="font-size: 3.5rem; color: #58C463;"></i>
+                    <h1 class="section-title mt-3">
+                        {{ t('order_thanks') }}, {{ order.customer_name }}
+                    </h1>
+                    <p class="body-lead">{{ t('order_confirmed_text') }}</p>
+
+                    <div class="text-start mt-4">
+                        <p><strong>{{ t('order_number') }}:</strong> {{ order.id }}</p>
+                        <p><strong>{{ t('order_type_label') }}:</strong>
+                            {{ t('order_delivery') if order.order_type == 'delivery' else t('order_pickup') }}</p>
+                        {% if order.address %}
+                        <p><strong>{{ t('order_address_label') }}:</strong> {{ order.address }}</p>
+                        {% endif %}
+
+                        <h2 class="menu-category-title mt-4">{{ t('order_items') }}</h2>
+                        <table class="table">
+                            <tbody>
+                                {% for oi in order.items %}
+                                <tr>
+                                    <td>{{ oi.menu_item.display_name(lang) }}</td>
+                                    <td>&times;{{ oi.quantity }}</td>
+                                    <td class="text-end">
+                                        {{ t('currency') }} {{ "%.0f"|format(oi.price_at_order * oi.quantity) }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr class="fw-bold">
+                                    <td colspan="2">{{ t('order_total') }}</td>
+                                    <td class="text-end">{{ t('currency') }} {{ "%.0f"|format(order.total) }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        {% if order.notes %}
+                        <p><strong>{{ t('order_notes_label') }}:</strong> {{ order.notes }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="menu-actions mt-4">
+                        <a href="tel:{{ r.phone_tel }}" class="btn btn-outline-burgundy">
+                            <i class="bi bi-telephone-fill"></i> {{ r.phone_display }}
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-burgundy">{{ t('back_home') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

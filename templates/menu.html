@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}{{ t('menu_title') }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+    <img src="{{ url_for('static', filename='images/dishes/table-spread-1280.webp') }}"
+         alt="" class="page-head-photo" aria-hidden="true">
+    <div class="container">
+        <p class="bsd">{{ t('bsd') }}</p>
+        <h1 class="page-title">{{ t('menu_title') }}</h1>
+        <p class="page-lead">{{ t('menu_intro') }}</p>
+    </div>
+</header>
+
+{# The salatim service opens every meal, so it opens the menu too. #}
+<section class="table-open">
+    <div class="container">
+        <div class="table-open-card">
+            <div class="table-open-text">
+                <h2>{{ t('table_open_title') }}</h2>
+                <p>{{ t('table_open_text') }}</p>
+            </div>
+            <span class="table-open-price">{{ t('table_open_price') }}</span>
+        </div>
+    </div>
+</section>
+
+{% if sections %}
+<section class="menu-section">
+    <div class="container">
+        <div class="menu-columns">
+            {% for section in sections %}
+            <section class="menu-block">
+                <h2 class="menu-category-title">{{ t('cat_' ~ section.key) }}</h2>
+
+                {% for item in section.dishes %}
+                <article class="menu-row">
+                    <div class="menu-row-main">
+                        <h3 class="menu-row-name">{{ item.display_name(lang) }}</h3>
+                        {% set desc = item.display_description(lang) %}
+                        {% if desc %}<p class="menu-row-desc">{{ desc }}</p>{% endif %}
+                    </div>
+                    <span class="menu-row-price">{{ t('currency') }} {{ "%.0f"|format(item.price) }}</span>
+                </article>
+                {% endfor %}
+
+                {% if section.has_sides_note %}
+                <p class="menu-sides-note">* {{ t('sides_note') }}</p>
+                {% endif %}
+            </section>
+            {% endfor %}
+        </div>
+
+        <p class="menu-service-note">* {{ t('service_note') }}</p>
+
+        <div class="menu-actions">
+            <a href="{{ url_for('reservations_page') }}" class="btn btn-burgundy btn-lg">
+                <i class="bi bi-calendar-heart"></i> {{ t('nav_reservations') }}
+            </a>
+            <a href="tel:{{ r.phone_tel }}" class="btn btn-outline-burgundy btn-lg">
+                <i class="bi bi-telephone-fill"></i> {{ t('call_us') }}
+            </a>
+            {% if pdf_path %}
+            <a href="{{ url_for('static', filename=pdf_path) }}" target="_blank" rel="noopener"
+               class="btn btn-outline-burgundy btn-lg">
+                <i class="bi bi-file-earmark-pdf"></i> {{ t('menu_download') }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% else %}
+{# Shown only if the menu table is empty - keeps the page useful either way. #}
+<div class="container">
+    <div class="menu-soon">
+        <i class="bi bi-hourglass-split"></i>
+        <h2 class="section-title mt-3">{{ t('menu_soon_title') }}</h2>
+        <p class="body-lead">{{ t('menu_soon_text') }}</p>
+        <div class="menu-actions justify-content-center">
+            <a href="tel:{{ r.phone_tel }}" class="btn btn-burgundy btn-lg">
+                <i class="bi bi-telephone-fill"></i> {{ t('call_us') }}
+            </a>
+            <a href="{{ url_for('reservations_page') }}" class="btn btn-outline-burgundy btn-lg">
+                {{ t('nav_reservations') }}
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

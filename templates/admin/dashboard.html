@@ -1,0 +1,78 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_title %}Dashboard{% endblock %}
+
+{% block admin_content %}
+<h2 class="mb-4">Dashboard</h2>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="stat-card bg-primary text-white">
+            <h3>{{ today_orders }}</h3>
+            <p>Today's Orders</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-success text-white">
+            <h3>₪ {{ "%.0f"|format(today_revenue) }}</h3>
+            <p>Today's Revenue</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-info text-white">
+            <h3>{{ today_reservations }}</h3>
+            <p>Today's Reservations</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-warning text-dark">
+            <h3>{{ pending_orders + pending_reservations }}</h3>
+            <p>Pending Actions</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Quick Actions -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0">Quick Actions</h5></div>
+            <div class="card-body">
+                <a href="{{ url_for('admin_orders') }}?status=pending" class="btn btn-outline-primary me-2 mb-2">
+                    Pending Orders ({{ pending_orders }})
+                </a>
+                <a href="{{ url_for('admin_reservations') }}?status=pending" class="btn btn-outline-info me-2 mb-2">
+                    Pending Reservations ({{ pending_reservations }})
+                </a>
+                <a href="{{ url_for('admin_menu') }}" class="btn btn-outline-secondary me-2 mb-2">
+                    Edit Menu
+                </a>
+                <a href="{{ url_for('admin_hours') }}" class="btn btn-outline-secondary mb-2">
+                    Edit Hours
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popular Items -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0">Most Popular Items</h5></div>
+            <div class="card-body">
+                {% if popular_items %}
+                <table class="table table-sm">
+                    <thead><tr><th>Item</th><th class="text-end">Orders</th></tr></thead>
+                    <tbody>
+                        {% for name, qty in popular_items %}
+                        <tr><td>{{ name }}</td><td class="text-end">{{ qty }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No orders yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

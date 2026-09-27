@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}{{ t('res_title') }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+    <img src="{{ url_for('static', filename='images/atmosphere/serving-couscous-1280.webp') }}"
+         alt="" class="page-head-photo" aria-hidden="true">
+    <div class="container">
+        <h1 class="page-title">{{ t('res_title') }}</h1>
+        <p class="page-lead">{{ t('res_intro') }}</p>
+    </div>
+</header>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-7">
+                <div class="form-card">
+                    <form method="POST" action="{{ url_for('reservations_page') }}">
+                        <div class="mb-3">
+                            <label class="form-label" for="res-name">{{ t('res_name') }} *</label>
+                            <input type="text" class="form-control" id="res-name" name="customer_name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="res-phone">{{ t('res_phone') }} *</label>
+                            <input type="tel" class="form-control" id="res-phone" name="phone"
+                                   inputmode="tel" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="res-date">{{ t('res_date') }} *</label>
+                                <input type="date" class="form-control" id="res-date" name="date"
+                                       required min="{{ today }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="res-time">{{ t('res_time') }} *</label>
+                                {# Slots come from the opening hours, so the
+                                   afternoon break is never bookable. The
+                                   per-weekday map narrows them once a date
+                                   is picked. #}
+                                <select class="form-select" id="res-time" name="time" required
+                                        data-slots="{{ slots|tojson|forceescape }}">
+                                    <option value="">—</option>
+                                    {% for slot in all_slots %}
+                                    <option value="{{ slot }}">{{ slot }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="res-party">{{ t('res_party') }} *</label>
+                            <select class="form-select" id="res-party" name="party_size" required>
+                                {% for i in range(1, 21) %}
+                                <option value="{{ i }}" {% if i == 2 %}selected{% endif %}>{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="res-notes">{{ t('res_notes') }}</label>
+                            <textarea class="form-control" id="res-notes" name="notes" rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-burgundy btn-lg w-100">
+                            <i class="bi bi-calendar-check"></i> {{ t('res_submit') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="info-panel">
+                    <h3>{{ t('hours_title') }}</h3>
+                    <table class="hours-table mb-3">
+                        <tbody>
+                            {% for h in hours %}
+                            <tr {% if not h.ranges %}class="is-closed"{% endif %}>
+                                <th scope="row">{{ day_name(h.day_of_week) }}</th>
+                                <td>
+                                    {% if not h.ranges %}{{ t('hours_closed') }}
+                                    {% else %}{% for open_t, close_t in h.ranges %}
+                                    <span class="hours-range" dir="ltr">{{ open_t }}–{{ close_t }}</span>
+                                    {% endfor %}{% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <p class="footer-shabbat"><i class="bi bi-moon-stars"></i> {{ t('hours_shabbat_note') }}</p>
+
+                    <hr>
+
+                    <h3>{{ t('footer_contact') }}</h3>
+                    <p><a href="tel:{{ r.phone_tel }}"><i class="bi bi-telephone-fill"></i> {{ r.phone_display }}</a></p>
+                    {% if r.mobile_tel %}
+                    <p><a href="tel:{{ r.mobile_tel }}"><i class="bi bi-phone-fill"></i> {{ r.mobile_display }}</a></p>
+                    {% endif %}
+                    <p><a href="{{ whatsapp_url(t('res_title')) }}" target="_blank" rel="noopener">
+                        <i class="bi bi-whatsapp"></i> {{ t('whatsapp_us') }}</a></p>
+                    <p><i class="bi bi-geo-alt-fill"></i> {{ r.address_he if lang == 'he' else r.address_fr }}</p>
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a class="btn btn-outline-gold btn-sm" href="{{ waze_url }}" target="_blank" rel="noopener">
+                            <i class="bi bi-signpost-split"></i> Waze
+                        </a>
+                        <a class="btn btn-outline-gold btn-sm" href="{{ gmaps_url }}" target="_blank" rel="noopener">
+                            <i class="bi bi-map"></i> Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Narrow the time list to the day actually chosen. Without this the select
+// offers every slot from every weekday, which on a Friday means offering
+// times the restaurant is shut.
+(function () {
+    var dateInput = document.getElementById('res-date');
+    var timeInput = document.getElementById('res-time');
+    if (!dateInput || !timeInput) return;
+
+    var byDay = JSON.parse(timeInput.dataset.slots || '{}');
+
+    function refresh() {
+        if (!dateInput.value) return;
+        // getUTCDay() on a date-only value: 0 = Sunday, matching BusinessHours.
+        var allowed = byDay[new Date(dateInput.value).getUTCDay()] || [];
+        Array.prototype.forEach.call(timeInput.options, function (opt) {
+            if (!opt.value) return;
+            opt.hidden = opt.disabled = allowed.indexOf(opt.value) === -1;
+        });
+        if (timeInput.value && allowed.indexOf(timeInput.value) === -1) {
+            timeInput.value = '';
+        }
+        timeInput.setCustomValidity(
+            allowed.length ? '' : timeInput.dataset.closedMsg || ''
+        );
+    }
+
+    timeInput.dataset.closedMsg = {{ t('hours_closed')|tojson }};
+    dateInput.addEventListener('change', refresh);
+    refresh();
+})();
+</script>
+{% endblock %}

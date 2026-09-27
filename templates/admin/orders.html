@@ -1,0 +1,73 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_title %}Orders{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Orders</h2>
+    <div>
+        <a href="{{ url_for('admin_orders') }}" class="btn btn-sm btn-{{ 'primary' if not current_filter else 'outline-primary' }}">All</a>
+        <a href="{{ url_for('admin_orders', status='pending') }}" class="btn btn-sm btn-{{ 'primary' if current_filter == 'pending' else 'outline-primary' }}">Pending</a>
+        <a href="{{ url_for('admin_orders', status='preparing') }}" class="btn btn-sm btn-{{ 'primary' if current_filter == 'preparing' else 'outline-primary' }}">Preparing</a>
+        <a href="{{ url_for('admin_orders', status='ready') }}" class="btn btn-sm btn-{{ 'primary' if current_filter == 'ready' else 'outline-primary' }}">Ready</a>
+        <a href="{{ url_for('admin_orders', status='completed') }}" class="btn btn-sm btn-{{ 'primary' if current_filter == 'completed' else 'outline-primary' }}">Completed</a>
+    </div>
+</div>
+
+{% if orders %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Type</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.customer_name }}</td>
+                <td>{{ order.phone }}</td>
+                <td><span class="badge bg-secondary">{{ order.order_type }}</span></td>
+                <td>
+                    <small>
+                    {% for oi in order.items %}
+                        {{ oi.menu_item.name }} x{{ oi.quantity }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    </small>
+                </td>
+                <td><strong>₪ {{ "%.0f"|format(order.total) }}</strong></td>
+                <td>
+                    <span class="badge bg-{{ 'warning' if order.status == 'pending' else 'info' if order.status == 'preparing' else 'success' if order.status == 'ready' else 'secondary' }}">
+                        {{ order.status }}
+                    </span>
+                </td>
+                <td><small>{{ order.created_at.strftime('%m/%d %H:%M') }}</small></td>
+                <td>
+                    <form method="POST" action="{{ url_for('update_order_status', order_id=order.id) }}" class="d-inline">
+                        <select name="status" class="form-select form-select-sm d-inline-block" style="width:auto;" onchange="this.form.submit()">
+                            <option value="">Change...</option>
+                            <option value="pending">Pending</option>
+                            <option value="preparing">Preparing</option>
+                            <option value="ready">Ready</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted">No orders found.</p>
+{% endif %}
+{% endblock %}

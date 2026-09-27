@@ -1,0 +1,1553 @@
+/* ═══════════════════════════════════════════════════════════════
+   Neomi · נעמי — Tunisian Kitchen
+   Palette taken from the logo: deep burgundy + gold on cream.
+   Layout uses CSS logical properties throughout so the same rules
+   serve the Hebrew (RTL) and French (LTR) versions.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+    --burgundy-deep: #3F0B18;
+    --burgundy: #5A1024;
+    --burgundy-mid: #73203A;
+    --burgundy-soft: #8E3A52;
+
+    --gold: #C9A227;
+    --gold-light: #E3C766;
+    --gold-pale: #F2E3B0;
+
+    --cream: #FBF6EC;
+    --cream-dark: #F1E6D2;
+    --cream-warm: #EFE2CB;
+
+    --harissa: #C0392B;
+    --ink: #2B1A1D;
+    --ink-soft: #5E4B4E;
+
+    --font-display: 'Heebo', 'Playfair Display', serif;
+    --font-body: 'Assistant', 'Heebo', system-ui, sans-serif;
+
+    --shadow-soft: 0 4px 24px rgba(63, 11, 24, 0.10);
+    --shadow-lift: 0 14px 44px rgba(63, 11, 24, 0.20);
+
+    --nav-h: 74px;
+}
+
+/* Latin languages get the serif display face; Hebrew keeps Heebo,
+   whose heavier weights carry the logo's feel far better. */
+html[lang="fr"] {
+    --font-display: 'Playfair Display', 'Heebo', serif;
+}
+
+* { box-sizing: border-box; }
+
+/* overflow-x on <body> alone does not contain overflow — it propagates to
+   the viewport. In RTL an overflowing document shifts everything (including
+   fixed bars) off the start edge, so this has to be set on <html> too. */
+html {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--ink);
+    background: var(--cream);
+    margin: 0;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+a { text-decoration: none; }
+
+img { max-width: 100%; height: auto; }
+
+/* Clipped rather than pushed off-screen with a large offset: in RTL a
+   negative inline offset lands far to the right and can create a phantom
+   horizontal scrollbar. */
+.skip-link {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    z-index: 2000;
+    background: var(--gold);
+    color: var(--burgundy-deep);
+    padding: 0.6rem 1.2rem;
+    font-weight: 700;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+.skip-link:focus { clip-path: none; }
+
+:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+}
+
+/* ── Shared section furniture ──────────────────────────────── */
+
+.eyebrow {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+}
+.eyebrow-light { color: var(--gold-light); }
+
+.section-title {
+    font-size: clamp(1.75rem, 4vw, 2.85rem);
+    color: var(--burgundy);
+    margin-bottom: 1rem;
+}
+.section-title-light { color: var(--cream); }
+
+.section-head { max-width: 760px; margin-inline: auto; margin-bottom: 3rem; }
+
+.section-lead,
+.body-lead {
+    font-size: 1.12rem;
+    color: var(--ink-soft);
+    font-weight: 300;
+}
+
+/* <strong> defaults to `bolder`, which is RELATIVE: from the 300 above it
+   computes to 400, so emphasis inside these paragraphs was invisible.
+   State the weight absolutely, and darken it, so it actually reads. */
+.section-lead strong,
+.body-lead strong {
+    font-weight: 700;
+    color: var(--ink);
+}
+.section-lead-light { color: rgba(251, 246, 236, 0.82); }
+
+/* ── Buttons ───────────────────────────────────────────────── */
+
+.btn {
+    font-family: var(--font-body);
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 0.7rem 1.9rem;
+    border-width: 2px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-lg { padding: 0.85rem 2.3rem; font-size: 1.05rem; }
+.btn-sm { padding: 0.45rem 1.2rem; font-size: 0.92rem; }
+
+.btn-gold {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--burgundy-deep);
+}
+.btn-gold:hover {
+    background: var(--gold-light);
+    border-color: var(--gold-light);
+    color: var(--burgundy-deep);
+    box-shadow: var(--shadow-lift);
+}
+
+.btn-burgundy {
+    background: var(--burgundy);
+    border-color: var(--burgundy);
+    color: var(--cream);
+}
+.btn-burgundy:hover {
+    background: var(--burgundy-mid);
+    border-color: var(--burgundy-mid);
+    color: #fff;
+}
+
+.btn-outline-burgundy {
+    background: transparent;
+    border-color: var(--burgundy);
+    color: var(--burgundy);
+}
+.btn-outline-burgundy:hover { background: var(--burgundy); color: var(--cream); }
+
+.btn-outline-cream {
+    background: transparent;
+    border-color: rgba(251, 246, 236, 0.7);
+    color: var(--cream);
+}
+.btn-outline-cream:hover { background: var(--cream); color: var(--burgundy); }
+
+.btn-outline-gold {
+    background: transparent;
+    border-color: var(--gold);
+    color: var(--gold);
+}
+.btn-outline-gold:hover { background: var(--gold); color: var(--burgundy-deep); }
+
+/* ── Navbar ────────────────────────────────────────────────── */
+
+#mainNav {
+    background: linear-gradient(to bottom, rgba(63, 11, 24, 0.92), rgba(63, 11, 24, 0.68));
+    backdrop-filter: blur(8px);
+    padding-block: 0.55rem;
+    min-height: var(--nav-h);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+#mainNav.is-scrolled {
+    background: var(--burgundy-deep);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.28);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+.brand-logo { border-radius: 50%; box-shadow: 0 0 0 2px var(--gold); }
+.brand-words { display: flex; flex-direction: column; line-height: 1.1; }
+.brand-text {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--cream);
+}
+.brand-sub {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+}
+
+#mainNav .nav-link {
+    color: rgba(251, 246, 236, 0.88);
+    font-weight: 600;
+    padding-inline: 0.85rem;
+    position: relative;
+    /* A two-word label like "הסיפור שלנו" must never break across lines -
+       a wrapped item makes the whole bar two rows tall. */
+    white-space: nowrap;
+}
+
+/* The booking button is the one thing in the bar that must never wrap:
+   split across two lines it stops reading as a button at all. */
+#mainNav .btn-gold { white-space: nowrap; }
+
+/* Between the collapse breakpoint and a roomy desktop there are seven
+   labels, a language switch and a button to fit. Tighten the gaps rather
+   than let anything wrap. The range runs to 1320px because the French
+   labels ("Casher Lemehadrin", "Événements") are wider than the Hebrew. */
+@media (min-width: 992px) and (max-width: 1319.98px) {
+    #mainNav .nav-link { padding-inline: 0.45rem; font-size: 0.95rem; }
+    #mainNav .nav-link::after { inset-inline: 0.45rem; }
+    .brand-sub { display: none; }
+}
+
+/* Narrower still and the wordmark runs into the first link, so the brand
+   gives up some size too. It keeps the badge, which is what identifies it. */
+@media (min-width: 992px) and (max-width: 1099.98px) {
+    .navbar-brand { gap: 0.5rem; margin-inline-end: 0.75rem; }
+    .brand-logo { inline-size: 42px; block-size: 42px; }
+    .brand-text { font-size: 1.2rem; }
+    #mainNav .nav-link { padding-inline: 0.35rem; font-size: 0.9rem; }
+    #mainNav .nav-link::after { inset-inline: 0.35rem; }
+}
+#mainNav .nav-link:hover { color: var(--gold-light); }
+#mainNav .nav-link::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0.85rem;
+    bottom: 0.2rem;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.22s ease;
+}
+#mainNav .nav-link:hover::after { transform: scaleX(1); }
+
+.navbar-toggler {
+    border-color: rgba(251, 246, 236, 0.4);
+    padding: 0.35rem 0.55rem;
+}
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23FBF6EC' stroke-linecap='round' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.lang-switch {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    padding-inline: 0.85rem;
+}
+.lang-opt {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: rgba(251, 246, 236, 0.6);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+.lang-opt:hover { color: var(--gold-light); }
+.lang-opt.is-active {
+    color: var(--burgundy-deep);
+    background: var(--gold);
+}
+
+/* ── Flash messages ────────────────────────────────────────── */
+
+.flash-container {
+    margin-top: calc(var(--nav-h) + 0.5rem);
+    padding-inline: 1rem;
+}
+.flash-container .alert { border-radius: 10px; border: none; }
+.alert-success { background: #E7F1E4; color: #2C5127; }
+.alert-danger { background: #FBE6E3; color: #8A2A20; }
+
+/* ── Hero ──────────────────────────────────────────────────── */
+
+.hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+}
+
+.hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+/* Kept deliberately light: the warmth of the footage is the selling point,
+   so it darkens the edges for text contrast rather than veiling the frame. */
+.hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        radial-gradient(ellipse at 50% 45%, rgba(43, 6, 15, 0.18) 0%, rgba(43, 6, 15, 0.68) 100%),
+        linear-gradient(to bottom, rgba(43, 6, 15, 0.62) 0%, rgba(43, 6, 15, 0.12) 34%, rgba(43, 6, 15, 0.78) 100%);
+}
+
+.hero-inner {
+    position: relative;
+    z-index: 2;
+    padding-block: calc(var(--nav-h) + 2rem) 4rem;
+    color: var(--cream);
+}
+
+.hero-logo {
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--gold), var(--shadow-lift);
+    margin-bottom: 1.5rem;
+}
+
+.hero-eyebrow {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 0.75rem;
+}
+
+/* The tagline row under the logo. Chips rather than a run-on line so each
+   claim reads as its own badge, and so they wrap cleanly on a phone. */
+.hero-taglines {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0 auto 1.25rem;
+}
+
+.tagline-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(43, 6, 15, 0.42);
+    border: 1px solid rgba(242, 227, 176, 0.45);
+    color: var(--cream);
+    border-radius: 999px;
+    padding: 0.32rem 0.9rem;
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(3px);
+}
+
+.tagline-chip i { color: var(--gold-light); font-size: 0.9em; }
+
+/* The kosher badge is the one that closes a sale, so it gets the gold. */
+.tagline-chip.is-kosher {
+    background: rgba(201, 162, 39, 0.2);
+    border-color: var(--gold);
+    color: var(--gold-pale);
+}
+.tagline-chip.is-kosher i { color: var(--gold); }
+
+.hero-headline {
+    font-size: clamp(2.75rem, 9vw, 5.75rem);
+    font-weight: 900;
+    color: var(--cream);
+    margin-bottom: 1rem;
+    text-shadow: 0 3px 30px rgba(0, 0, 0, 0.5);
+}
+
+.hero-sub {
+    font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+    font-weight: 300;
+    color: rgba(251, 246, 236, 0.9);
+    max-width: 620px;
+    margin-inline: auto;
+    margin-bottom: 2.25rem;
+}
+
+.hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    justify-content: center;
+}
+
+.hero-status {
+    margin-top: 1.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(251, 246, 236, 0.75);
+}
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #9E8E91;
+    margin-inline-end: 0.4rem;
+}
+.hero-status.is-open .status-dot {
+    background: #58C463;
+    box-shadow: 0 0 0 4px rgba(88, 196, 99, 0.25);
+}
+
+.hero-scroll {
+    position: absolute;
+    bottom: 1.4rem;
+    inset-inline: 0;
+    z-index: 2;
+    color: rgba(251, 246, 236, 0.7);
+    font-size: 1.6rem;
+    animation: nudge 2.2s ease-in-out infinite;
+}
+@keyframes nudge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+}
+
+/* ── Trust strip ───────────────────────────────────────────── */
+
+.trust {
+    background: var(--burgundy-deep);
+    border-block: 1px solid rgba(201, 162, 39, 0.3);
+    padding-block: 1.2rem;
+}
+.trust-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem 2.5rem;
+}
+.trust-list li {
+    color: var(--gold-pale);
+    font-weight: 600;
+    font-size: 0.98rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.trust-list i { color: var(--gold); font-size: 1.15rem; }
+.trust-list a {
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+}
+.trust-list a:hover,
+.trust-list a:focus-visible { color: var(--cream); border-bottom-color: currentColor; }
+
+.tagline-chip a {
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+}
+.tagline-chip.is-kosher { transition: background-color .18s ease, border-color .18s ease; }
+.tagline-chip.is-kosher:hover,
+.tagline-chip.is-kosher:focus-within { background: rgba(201, 162, 39, 0.34); }
+
+/* ── After the booking form ────────────────────────────────── */
+
+.res-sent { padding-block: calc(var(--nav-h) + 3.5rem) 5rem; }
+
+.res-sent-card {
+    max-inline-size: 34rem;
+    margin-inline: auto;
+    text-align: center;
+    background: var(--cream);
+    border: 1px solid rgba(90, 16, 36, 0.12);
+    border-radius: 14px;
+    padding: 2.5rem 2rem 2.25rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.res-sent-mark {
+    display: grid;
+    place-items: center;
+    inline-size: 3.5rem;
+    block-size: 3.5rem;
+    margin-inline: auto;
+    margin-block-end: 1.1rem;
+    border-radius: 50%;
+    background: var(--burgundy);
+    color: var(--gold-pale);
+    font-size: 1.75rem;
+}
+
+.res-sent-title { font-family: var(--font-display); font-size: 2rem; font-weight: 800; margin-block-end: 0.6rem; }
+.res-sent-lead { color: var(--ink-soft); margin-block-end: 1.5rem; }
+
+.res-sent-summary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--cream-dark);
+    border-radius: 9px;
+    padding: 0.7rem 1rem;
+    margin-block-end: 1.6rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+.res-sent-summary i { color: var(--gold); }
+
+/* WhatsApp's own green, because that is the button people recognise. */
+.btn-whatsapp {
+    background: #25D366;
+    border: 1px solid #1EBE5A;
+    color: #06331A;
+    font-weight: 700;
+}
+.btn-whatsapp:hover, .btn-whatsapp:focus-visible { background: #1EBE5A; color: #06331A; }
+
+.res-sent-note { font-size: 0.9rem; color: var(--ink-soft); margin-block: 0.85rem 0; }
+.res-sent-rule { border: 0; border-block-start: 1px solid rgba(90, 16, 36, 0.14); margin-block: 1.8rem 1.4rem; }
+.res-sent-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.7rem; }
+
+/* Only meaningful when the auto-open script can actually run. */
+.js-only { display: none; }
+.js .js-only { display: block; }
+
+/* ── Kashrut certificate page ──────────────────────────────── */
+
+.kosher-section { padding-block: 4rem 5rem; }
+
+/* The certificate is a photograph of paper, so it gets a physical frame
+   rather than sitting flat on the page. */
+.kosher-cert {
+    display: block;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lift);
+    background: var(--cream);
+    line-height: 0;
+}
+.kosher-cert img { inline-size: 100%; block-size: auto; }
+
+.kosher-zoom {
+    position: absolute;
+    inset-block-end: 0.9rem;
+    inset-inline-end: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: rgba(43, 6, 15, 0.82);
+    color: var(--cream);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.4;
+    opacity: 0;
+    transition: opacity .18s ease;
+}
+.kosher-cert:hover .kosher-zoom,
+.kosher-cert:focus-visible .kosher-zoom { opacity: 1; }
+/* Touch screens have no hover, so the hint stays visible there. */
+@media (hover: none) { .kosher-zoom { opacity: 1; } }
+
+.kosher-facts {
+    background: var(--cream-dark);
+    border: 1px solid rgba(90, 16, 36, 0.16);
+    border-radius: 10px;
+    padding: 1.6rem 1.7rem;
+}
+.kosher-facts dl { margin: 0; display: grid; gap: 0.15rem; }
+.kosher-facts dt {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    opacity: 0.75;
+}
+.kosher-facts dd {
+    margin: 0 0 0.95rem;
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+.kosher-facts dd:last-of-type { margin-bottom: 0; }
+
+.kosher-valid,
+.kosher-expired {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 1.4rem 0 0;
+    padding: 0.75rem 0.95rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.92rem;
+}
+.kosher-valid { background: rgba(90, 16, 36, 0.08); color: var(--burgundy); }
+.kosher-valid i { color: var(--gold); }
+.kosher-expired { background: rgba(192, 57, 43, 0.12); color: var(--harissa); }
+.kosher-expired i { color: var(--harissa); margin-top: 0.15rem; }
+
+.kosher-questions { margin: 1.1rem 0 1.2rem; font-size: 0.92rem; }
+.kosher-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+
+/* The footer badge became a link on every page. */
+a.kosher-chip { text-decoration: none; transition: background-color .18s ease; }
+a.kosher-chip:hover, a.kosher-chip:focus-visible {
+    background: rgba(201, 162, 39, 0.3);
+    color: var(--gold-pale);
+}
+
+/* ── Signature dish story ──────────────────────────────────── */
+
+.story {
+    padding-block: 5rem;
+    background:
+        linear-gradient(var(--cream), var(--cream)) padding-box,
+        var(--cream);
+}
+
+.story-rail {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    padding: 0.5rem 1.25rem 1.75rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold) var(--cream-dark);
+}
+.story-rail::-webkit-scrollbar { height: 8px; }
+.story-rail::-webkit-scrollbar-track { background: var(--cream-dark); border-radius: 99px; }
+.story-rail::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 99px; }
+
+.story-frame {
+    flex: 0 0 auto;
+    inline-size: min(78vw, 340px);
+    margin: 0;
+    scroll-snap-align: center;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.story-frame:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lift);
+}
+.story-frame img {
+    display: block;
+    inline-size: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+}
+
+/* Scroll-triggered reveal, wired up in main.js.
+   Scoped to html.js so the content is visible by default: if JS is blocked
+   or IntersectionObserver never fires, the photos must still show. */
+.js .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.js .reveal.is-visible { opacity: 1; transform: none; }
+
+@media print {
+    .js .reveal { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .js .reveal { opacity: 1; transform: none; transition: none; }
+    .hero-scroll { animation: none; }
+    .btn:hover, .story-frame:hover { transform: none; }
+}
+
+/* ── Salatim ───────────────────────────────────────────────── */
+
+.salatim { padding-block: 5rem; background: var(--cream-warm); }
+
+.framed-photo {
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lift);
+    position: relative;
+}
+.framed-photo::after {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(251, 246, 236, 0.35);
+    border-radius: 10px;
+    pointer-events: none;
+}
+.framed-photo img { display: block; inline-size: 100%; object-fit: cover; }
+.portrait-photo img { aspect-ratio: 16 / 9; }
+
+.salatim-thumbs {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+}
+.salatim-thumbs img {
+    /* flex-basis 0 rather than 33.333%: three thirds plus two gaps would
+       exceed the row and push the page wider than the viewport. */
+    flex: 1 1 0;
+    min-inline-size: 0;
+    inline-size: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: var(--shadow-soft);
+}
+
+/* ── About ─────────────────────────────────────────────────── */
+
+.about { padding-block: 5rem; background: var(--cream); }
+
+/* ── About page (/about) ───────────────────────────────────── */
+
+.about-page { padding-block: 5rem 4rem; background: var(--cream); }
+
+/* Chapters are separated by a hairline rather than whitespace alone, so a
+   long page still reads as distinct beats instead of one wall. */
+.about-chapter + .about-chapter {
+    margin-top: 4rem;
+    padding-top: 4rem;
+    border-top: 1px solid rgba(201, 162, 39, 0.35);
+}
+/* The quote already closes with a rule of its own; a second hairline right
+   under it reads as a mistake. Keep the spacing, drop the line. */
+.about-quote + .about-chapter { margin-top: 4rem; padding-top: 4rem; }
+.about-chapter .body-lead { margin-bottom: 1.5rem; }
+.about-address {
+    font-weight: 600;
+    color: var(--burgundy);
+    margin-bottom: 1rem;
+}
+.about-address i { color: var(--gold); }
+.about-map-links { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.about-chapter .btn { margin-bottom: 0.25rem; }
+
+/* The certificate is a portrait scan; letting it fill a 16/9 frame would
+   crop the small print that is the whole reason to show it. */
+/* The certificate is a portrait scan. Letting it fill a 16/9 frame crops
+   the small print that is the whole reason to show it, but at its own
+   aspect ratio it towers over every other chapter - so it is contained and
+   capped, with /kosher one tap away for anyone who wants to read it. */
+.about-chapter .framed-photo:has(img[src*="kosher-certificate"]) {
+    max-inline-size: 400px;
+    margin-inline: auto;
+}
+.about-chapter .framed-photo img[src*="kosher-certificate"] {
+    aspect-ratio: 2 / 3;
+    object-fit: contain;
+    background: var(--cream-dark);
+}
+
+.about-quote {
+    margin: 4rem auto 0;
+    max-width: 760px;
+    text-align: center;
+}
+.about-quote blockquote {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--burgundy);
+    padding-block: 1.5rem;
+    border-block: 2px solid var(--gold);
+}
+
+.about-close {
+    padding-block: 4.5rem;
+    background:
+        linear-gradient(rgba(43, 6, 15, 0.88), rgba(43, 6, 15, 0.94)),
+        var(--burgundy-deep);
+}
+.about-close-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1.75rem;
+}
+
+/* The arrow means "onward", so it follows the reading direction: it is
+   authored pointing left for Hebrew and mirrored for the French pages. */
+[dir="ltr"] .rtl-flip { transform: scaleX(-1); }
+
+@media (max-width: 768px) {
+    .about-page { padding-block: 3rem 2.5rem; }
+    .about-chapter + .about-chapter,
+    .about-quote + .about-chapter { margin-top: 2.5rem; padding-top: 2.5rem; }
+    .about-quote { margin-top: 2.5rem; }
+    .about-close { padding-block: 3rem; }
+}
+
+/* ── Atmosphere ────────────────────────────────────────────── */
+
+.atmos {
+    padding-block: 5rem;
+    background:
+        linear-gradient(rgba(43, 6, 15, 0.86), rgba(43, 6, 15, 0.92)),
+        var(--burgundy-deep);
+}
+
+.atmos-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+}
+.atmos-tile {
+    margin: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lift);
+}
+.atmos-tile img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.atmos-tile:hover img { transform: scale(1.04); }
+.atmos-tile-wide { grid-row: span 2; }
+.atmos-tile-wide img { aspect-ratio: 4 / 5; }
+
+@media (max-width: 768px) {
+    .atmos-grid { grid-template-columns: 1fr; }
+    .atmos-tile-wide { grid-row: auto; }
+    .atmos-tile-wide img { aspect-ratio: 16 / 9; }
+}
+
+/* ── Events ────────────────────────────────────────────────── */
+
+.events { padding-block: 5rem; background: var(--cream-warm); }
+.events-card {
+    background: var(--cream);
+    border: 1px solid rgba(201, 162, 39, 0.45);
+    border-radius: 20px;
+    padding: clamp(1.75rem, 4vw, 3.25rem);
+    box-shadow: var(--shadow-soft);
+}
+
+/* ── Featured dishes ───────────────────────────────────────── */
+
+.featured { padding-block: 5rem; background: var(--cream); }
+
+.dish-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    block-size: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.dish-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lift); }
+
+.dish-img-wrapper { overflow: hidden; }
+.dish-img {
+    inline-size: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+.dish-card:hover .dish-img { transform: scale(1.05); }
+
+.dish-info { padding: 1.4rem; flex: 1; display: flex; flex-direction: column; }
+.dish-name { font-size: 1.3rem; color: var(--burgundy); margin-bottom: 0.15rem; }
+.dish-name-alt {
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+}
+.dish-desc { color: var(--ink-soft); font-size: 0.98rem; font-weight: 300; flex: 1; }
+.dish-price {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--burgundy);
+    margin-top: 0.75rem;
+}
+
+/* ── Visit (hours + location) ──────────────────────────────── */
+
+.visit {
+    padding-block: 5rem;
+    background: var(--burgundy);
+    color: var(--cream);
+}
+
+.hours-table { inline-size: 100%; border-collapse: collapse; }
+.hours-table th,
+.hours-table td {
+    padding: 0.7rem 0.25rem;
+    border-bottom: 1px solid rgba(242, 227, 176, 0.22);
+    font-weight: 600;
+}
+.hours-table th { text-align: start; color: var(--cream); font-weight: 700; }
+.hours-table td { text-align: end; color: var(--gold-pale); font-variant-numeric: tabular-nums; }
+.hours-table tr.is-closed th,
+.hours-table tr.is-closed td { color: rgba(251, 246, 236, 0.5); }
+
+/* Lunch and dinner sit on their own lines - side by side they read as one
+   long range, which is exactly the wrong thing to tell someone at 17:00. */
+.hours-range { display: block; }
+.hours-range + .hours-range { margin-top: 0.15rem; }
+
+.shabbat-note,
+.footer-shabbat {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--gold-light);
+}
+
+.visit-address { font-size: 1.1rem; margin-bottom: 1.5rem; }
+.visit-address i, .visit-contact i { color: var(--gold); }
+
+.visit-actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.5rem; }
+
+.visit-contact { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.visit-contact a { color: var(--cream); font-weight: 600; }
+.visit-contact a:hover { color: var(--gold-light); }
+
+/* ── Menu page ─────────────────────────────────────────────── */
+
+.page-head {
+    padding-block: calc(var(--nav-h) + 3.5rem) 3rem;
+    background: var(--burgundy-deep);
+    color: var(--cream);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.page-head-photo {
+    position: absolute;
+    inset: 0;
+    object-fit: cover;
+    inline-size: 100%;
+    block-size: 100%;
+    opacity: 0.28;
+}
+.page-head .container { position: relative; z-index: 1; }
+.page-title {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+}
+.page-lead { color: rgba(251, 246, 236, 0.8); max-width: 640px; margin-inline: auto; }
+
+.menu-soon {
+    max-width: 620px;
+    margin: 4rem auto;
+    text-align: center;
+    background: var(--cream);
+    border: 1px solid rgba(201, 162, 39, 0.5);
+    border-radius: 18px;
+    padding: 2.5rem 2rem;
+    box-shadow: var(--shadow-soft);
+}
+.menu-soon i { font-size: 2.5rem; color: var(--gold); }
+
+.bsd {
+    font-size: 0.8rem;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+/* "Opening the table" — the salatim service that starts every meal. */
+.table-open { padding-block: 2.5rem 0; }
+.table-open-card {
+    max-width: 820px;
+    margin-inline: auto;
+    background: var(--cream);
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 1.5rem 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-soft);
+}
+.table-open-text { flex: 1 1 320px; }
+.table-open-text h2 {
+    font-size: 1.35rem;
+    color: var(--burgundy);
+    margin-bottom: 0.35rem;
+}
+.table-open-text p { margin: 0; color: var(--ink-soft); font-size: 0.98rem; font-weight: 300; }
+.table-open-price {
+    background: var(--burgundy);
+    color: var(--gold-pale);
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 0.5rem 1.35rem;
+    white-space: nowrap;
+}
+
+.menu-section { padding-block: 3rem; }
+
+/* Two columns on wide screens, mirroring the printed card. */
+.menu-columns {
+    columns: 2 340px;
+    column-gap: 3rem;
+}
+.menu-block {
+    break-inside: avoid;
+    margin-bottom: 2.75rem;
+}
+.menu-category-title {
+    font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+    color: var(--burgundy);
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--gold);
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+.menu-row {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding-block: 0.7rem;
+    border-bottom: 1px dashed rgba(94, 75, 78, 0.2);
+}
+.menu-row:last-of-type { border-bottom: none; }
+.menu-row-main { flex: 1; }
+.menu-row-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--burgundy);
+    font-size: 1.1rem;
+    margin: 0 0 0.15rem;
+}
+.menu-row-desc { color: var(--ink-soft); font-size: 0.92rem; font-weight: 300; margin: 0; }
+.menu-row-price {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--burgundy);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+.menu-sides-note,
+.menu-service-note {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    font-weight: 300;
+    margin-top: 0.9rem;
+}
+.menu-service-note { text-align: center; margin-block: 1.5rem 2rem; }
+
+.menu-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+}
+
+/* ── Order page ────────────────────────────────────────────── */
+
+.order-category { margin-bottom: 2.5rem; }
+
+.order-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    box-shadow: var(--shadow-soft);
+}
+.order-item-info { flex: 1 1 220px; }
+.order-item-name {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--burgundy);
+    margin: 0 0 0.15rem;
+}
+.order-item-desc { margin: 0; font-size: 0.9rem; color: var(--ink-soft); font-weight: 300; }
+.order-item-actions { display: flex; align-items: center; gap: 1rem; }
+.order-item-price {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--burgundy);
+    font-variant-numeric: tabular-nums;
+}
+
+.cart-panel {
+    background: var(--cream);
+    border: 1px solid rgba(201, 162, 39, 0.5);
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-soft);
+    position: sticky;
+    top: calc(var(--nav-h) + 1rem);
+}
+.cart-title { font-size: 1.35rem; color: var(--burgundy); margin-bottom: 1rem; }
+.cart-title i { color: var(--gold); }
+.cart-empty { color: var(--ink-soft); font-weight: 300; margin: 0; }
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding-block: 0.6rem;
+    border-bottom: 1px dashed rgba(94, 75, 78, 0.2);
+}
+.cart-item-name { font-weight: 600; color: var(--burgundy); }
+.cart-item small { color: var(--ink-soft); font-size: 0.82rem; }
+.cart-item-qty { display: flex; align-items: center; gap: 0.5rem; }
+.cart-item-qty button {
+    inline-size: 30px;
+    block-size: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--burgundy);
+    background: transparent;
+    color: var(--burgundy);
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+.cart-item-qty button:hover { background: var(--burgundy); color: var(--cream); }
+.cart-item-qty strong { color: var(--burgundy); min-inline-size: 60px; text-align: end; }
+
+.cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--burgundy);
+}
+.cart-note { font-size: 0.92rem; color: var(--ink-soft); }
+.cart-note a { color: var(--burgundy); font-weight: 700; }
+
+@media (max-width: 991.98px) {
+    .menu-columns { columns: 1; }
+    .cart-panel { position: static; }
+}
+
+/* ── Gallery ───────────────────────────────────────────────── */
+
+.gallery-section { padding-block: 3.5rem; }
+
+.gallery-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-bottom: 2.5rem;
+}
+.gallery-tab {
+    background: transparent;
+    border: 2px solid var(--burgundy);
+    color: var(--burgundy);
+    border-radius: 999px;
+    padding: 0.45rem 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.gallery-tab:hover { background: var(--cream-dark); }
+.gallery-tab.is-active { background: var(--burgundy); color: var(--cream); }
+
+/* The masonry keeps every photo's own proportions - the set mixes 3:2
+   landscapes with 9:16 phone shots, and cropping them to a uniform grid
+   would ruin both. */
+.gallery-masonry {
+    columns: 3 260px;
+    column-gap: 1rem;
+}
+
+/* Lead row: the photographs taken in the restaurant, at roughly double the
+   width of a masonry tile. Two up on desktop, one up on a phone - where a
+   "big" photo is simply full width. */
+.gallery-lead {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+    gap: 1rem;
+    margin-block-end: 1rem;
+}
+
+/* Collapse the row entirely when a filter hides all four, so the tab does
+   not open with a gap where the lead photos used to be. */
+.gallery-lead:not(:has(.gallery-item:not([hidden]))) { display: none; }
+
+.gallery-item.is-lead {
+    margin: 0;
+    /* A consistent frame across four photos of different shapes; without it
+       the row goes ragged. 4:3 keeps a plate readable without cropping the
+       table out of the wider shots. */
+    aspect-ratio: 4 / 3;
+}
+.gallery-item.is-lead img {
+    block-size: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (max-width: 575.98px) {
+    /* Phones get a taller crop - a 4:3 letterbox at 340px wide is too small
+       to make out what is on the plate. */
+    .gallery-item.is-lead { aspect-ratio: 4 / 3.4; }
+}
+.gallery-item {
+    margin: 0 0 1rem;
+    break-inside: avoid;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    cursor: zoom-in;
+    position: relative;
+    background: var(--cream-dark);
+}
+.gallery-item img {
+    display: block;
+    inline-size: 100%;
+    transition: transform 0.4s ease;
+}
+.gallery-item:hover img { transform: scale(1.05); }
+.gallery-item[hidden] { display: none; }
+
+.gallery-video {
+    position: relative;
+    margin: 0 0 1rem;
+    break-inside: avoid;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+}
+.gallery-video video { display: block; inline-size: 100%; }
+.video-play-btn {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(43, 6, 15, 0.45);
+    border: none;
+    color: var(--cream);
+    font-size: 3.5rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.video-play-btn:hover { background: rgba(43, 6, 15, 0.25); }
+.video-play-btn[hidden] { display: none; }
+.video-label {
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-end: 0;
+    padding: 0.6rem 1rem;
+    color: var(--cream);
+    font-weight: 700;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+    pointer-events: none;
+}
+
+/* Lightbox */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: rgba(30, 4, 11, 0.95);
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+}
+.lightbox[hidden] { display: none; }
+.lightbox img {
+    max-inline-size: 92vw;
+    max-block-size: 86vh;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lift);
+}
+.lightbox-btn {
+    position: absolute;
+    background: rgba(251, 246, 236, 0.12);
+    border: none;
+    color: var(--cream);
+    font-size: 1.5rem;
+    inline-size: 48px;
+    block-size: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+}
+.lightbox-btn:hover { background: rgba(251, 246, 236, 0.28); }
+.lightbox-close { top: 1.25rem; inset-inline-end: 1.25rem; }
+.lightbox-prev { inset-inline-start: 1.25rem; }
+.lightbox-next { inset-inline-end: 1.25rem; }
+/* Chevrons point outward in both directions, so mirror them for RTL. */
+[dir="rtl"] .lightbox-prev i,
+[dir="rtl"] .lightbox-next i { transform: scaleX(-1); }
+
+/* ── Forms (reservations / order) ──────────────────────────── */
+
+.form-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    box-shadow: var(--shadow-soft);
+}
+.form-label { font-weight: 600; color: var(--burgundy); margin-bottom: 0.35rem; }
+.form-control, .form-select {
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 10px;
+    padding: 0.7rem 0.95rem;
+    font-family: var(--font-body);
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.2);
+}
+
+.info-panel {
+    background: var(--burgundy);
+    color: var(--cream);
+    border-radius: 18px;
+    padding: 2rem;
+}
+.info-panel h3 { color: var(--gold-light); font-size: 1.25rem; }
+.info-panel a { color: var(--cream); font-weight: 600; }
+.info-panel a:hover { color: var(--gold-light); }
+
+/* ── Footer ────────────────────────────────────────────────── */
+
+.footer {
+    background: var(--burgundy-deep);
+    color: rgba(251, 246, 236, 0.82);
+    padding-block: 3.5rem 1.5rem;
+    /* Clear the fixed mobile action bar. */
+    padding-bottom: 5.5rem;
+}
+@media (min-width: 992px) {
+    .footer { padding-bottom: 1.5rem; }
+}
+
+.footer-logo { border-radius: 50%; box-shadow: 0 0 0 2px var(--gold); margin-bottom: 1rem; }
+.footer-about { font-weight: 300; }
+.footer-heading { color: var(--gold-light); font-size: 1.1rem; margin-bottom: 1rem; }
+.footer p { margin-bottom: 0.55rem; }
+.footer a { color: rgba(251, 246, 236, 0.82); }
+.footer a:hover { color: var(--gold-light); }
+.footer i { color: var(--gold); margin-inline-end: 0.4rem; }
+.footer hr { border-color: rgba(242, 227, 176, 0.18); margin-block: 2rem 1rem; }
+.footer-legal { text-align: center; font-size: 0.9rem; margin: 0; }
+
+.footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    margin-bottom: 1rem;
+}
+.footer-nav a { font-size: 0.92rem; font-weight: 600; }
+
+.kosher-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(201, 162, 39, 0.15);
+    border: 1px solid var(--gold);
+    color: var(--gold-pale);
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.footer-map-links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.9rem; }
+
+.social-links { display: flex; gap: 0.75rem; }
+.social-links a {
+    inline-size: 42px;
+    block-size: 42px;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 162, 39, 0.5);
+    display: grid;
+    place-items: center;
+    font-size: 1.15rem;
+}
+.social-links a:hover { background: var(--gold); }
+.social-links a:hover i { color: var(--burgundy-deep); }
+.social-links i { margin: 0; }
+
+/* ── Mobile action bar ─────────────────────────────────────── */
+
+.mobile-bar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 1040;
+    display: flex;
+    background: var(--burgundy-deep);
+    border-top: 1px solid rgba(201, 162, 39, 0.4);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+.mobile-bar-item {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    padding: 0.6rem 0.25rem;
+    text-align: center;
+    color: var(--cream);
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+}
+.mobile-bar-item span {
+    max-inline-size: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.mobile-bar-item i { font-size: 1.2rem; color: var(--gold); }
+.mobile-bar-item.is-primary { background: var(--gold); color: var(--burgundy-deep); }
+.mobile-bar-item.is-primary i { color: var(--burgundy-deep); }
+
+/* ── Responsive ────────────────────────────────────────────── */
+
+@media (max-width: 991.98px) {
+    #mainNav {
+        background: var(--burgundy-deep);
+    }
+    #mainNav .navbar-collapse {
+        padding-block: 1rem;
+    }
+    #mainNav .nav-link { padding-block: 0.5rem; }
+    .lang-switch { padding-block: 0.5rem; }
+    .story { padding-block: 3.5rem; }
+    .salatim, .about, .atmos, .events, .featured, .visit { padding-block: 3.5rem; }
+    .gallery-masonry { columns: 2 160px; }
+}
+
+@media (max-width: 575.98px) {
+    body { font-size: 1rem; }
+    .hero-cta .btn { inline-size: 100%; }
+    .gallery-masonry { columns: 1; }
+    .visit-actions .btn { inline-size: 100%; }
+}
+
+/* ── Print ─────────────────────────────────────────────────────
+   Mostly for the menu page, which people do print and hand out.
+   Drops the fixed chrome and lets sections flow onto paper. */
+
+@media print {
+    @page { margin: 12mm; }
+
+    body { background: #fff; color: #000; font-size: 11pt; }
+
+    #mainNav,
+    .mobile-bar,
+    .hero-video,
+    .hero-scroll,
+    .skip-link,
+    .lang-switch,
+    .gallery-tabs,
+    .menu-actions,
+    .lightbox,
+    .footer-map-links,
+    .social-links { display: none !important; }
+
+    /* The hero is a full-viewport stage on screen; on paper it is a header. */
+    .hero {
+        min-height: auto;
+        padding-block: 0 1.5rem;
+        page-break-after: avoid;
+    }
+    .hero-scrim { display: none; }
+    .hero-inner { padding-block: 0; color: #000; }
+    .hero-headline, .hero-sub, .hero-eyebrow, .hero-status { color: #000; text-shadow: none; }
+    .tagline-chip {
+        background: none;
+        border-color: #000;
+        color: #000;
+        backdrop-filter: none;
+    }
+    .tagline-chip i, .tagline-chip.is-kosher, .tagline-chip.is-kosher i { color: #000; }
+
+    .story, .salatim, .about, .atmos, .events, .featured, .visit,
+    .about-page, .about-close,
+    .menu-section, .gallery-section, .page-head { padding-block: 1rem; }
+
+    .atmos, .visit, .page-head, .about-close { background: #fff !important; }
+    .section-title-light, .section-lead-light, .eyebrow-light,
+    .page-title, .page-lead, .visit .hours-table th, .visit .hours-table td { color: #000 !important; }
+    .page-head-photo { display: none; }
+
+    .menu-block, .menu-row, .table-open-card { page-break-inside: avoid; }
+    .story-rail { overflow: visible; flex-wrap: wrap; }
+    .story-frame { inline-size: 30%; box-shadow: none; }
+
+    .btn { display: none; }
+    a { color: #000; text-decoration: none; }
+}

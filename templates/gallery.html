@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ t('gallery_title') }}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+    <img src="{{ url_for('static', filename='images/atmosphere/family-table-1280.webp') }}"
+         alt="" class="page-head-photo" aria-hidden="true">
+    <div class="container">
+        <h1 class="page-title">{{ t('gallery_title') }}</h1>
+        <p class="page-lead">{{ t('gallery_intro') }}</p>
+    </div>
+</header>
+
+<section class="gallery-section">
+    <div class="container">
+        <div class="gallery-tabs" role="tablist">
+            {# Whichever tab carries is-active here is the one the page opens
+               on: main.js reads it and applies that filter on load. #}
+            <button class="gallery-tab is-active" data-filter="dishes" type="button">{{ t('gallery_tab_dishes') }}</button>
+            <button class="gallery-tab" data-filter="atmos" type="button">{{ t('gallery_tab_atmos') }}</button>
+            {% if videos %}
+            <button class="gallery-tab" data-filter="video" type="button">{{ t('gallery_tab_video') }}</button>
+            {% endif %}
+            <button class="gallery-tab" data-filter="all" type="button">{{ t('gallery_tab_all') }}</button>
+        </div>
+
+        {# Two zones, deliberately inside one #galleryGrid: main.js collects
+           .gallery-item from this container, so the filter tabs and the
+           lightbox arrows keep working across both without knowing they
+           exist. DOM order is also lightbox order, which is why the lead
+           photos are written first. #}
+        <div id="galleryGrid">
+
+            {# The photographs taken at the restaurant, at double width. #}
+            <div class="gallery-lead">
+                {% for item in items if item.lead %}
+                <figure class="gallery-item is-lead" data-group="{{ item.group }}"
+                        data-full="{{ url_for('static', filename=item.full) }}">
+                    <img src="{{ url_for('static', filename=item.thumb) }}"
+                         alt="{{ t(item.alt_key) }}"
+                         loading="{{ 'eager' if loop.index <= 2 else 'lazy' }}"
+                         decoding="async">
+                </figure>
+                {% endfor %}
+            </div>
+
+            <div class="gallery-masonry">
+                {% for v in videos %}
+                <figure class="gallery-video" data-group="video">
+                    <video preload="none" playsinline controls
+                           poster="{{ url_for('static', filename=v.poster) }}">
+                        <source src="{{ url_for('static', filename=v.src) }}" type="video/mp4">
+                    </video>
+                    <button class="video-play-btn" type="button" aria-label="{{ t('video_play') }}">
+                        <i class="bi bi-play-circle-fill"></i>
+                    </button>
+                    <figcaption class="video-label">{{ v.label_he if lang == 'he' else v.label_fr }}</figcaption>
+                </figure>
+                {% endfor %}
+
+                {% for item in items if not item.lead %}
+                <figure class="gallery-item" data-group="{{ item.group }}"
+                        data-full="{{ url_for('static', filename=item.full) }}">
+                    <img src="{{ url_for('static', filename=item.thumb) }}"
+                         alt="{{ t(item.alt_key) }}" loading="lazy" decoding="async">
+                </figure>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if not items and not videos %}
+        <p class="text-center body-lead">
+            <!-- Run tools/build_assets.py to generate the gallery images. -->
+            {{ t('menu_soon_text') }}
+        </p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true">
+    <img id="lightboxImg" src="" alt="">
+    <button class="lightbox-btn lightbox-close" type="button" aria-label="{{ t('gallery_close') }}">
+        <i class="bi bi-x-lg"></i>
+    </button>
+    <button class="lightbox-btn lightbox-prev" type="button" aria-label="{{ t('gallery_prev') }}">
+        <i class="bi bi-chevron-left"></i>
+    </button>
+    <button class="lightbox-btn lightbox-next" type="button" aria-label="{{ t('gallery_next') }}">
+        <i class="bi bi-chevron-right"></i>
+    </button>
+</div>
+{% endblock %}
