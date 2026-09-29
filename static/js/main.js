@@ -21,6 +21,19 @@
         const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 60);
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
+
+        // Same-page links (#visit, #events) only scroll, so the open mobile
+        // menu would stay over the section. Close it on any link tap.
+        const collapse = document.getElementById('navContent');
+        if (collapse && window.bootstrap) {
+            collapse.querySelectorAll('a').forEach((link) => {
+                link.addEventListener('click', () => {
+                    if (collapse.classList.contains('show')) {
+                        bootstrap.Collapse.getOrCreateInstance(collapse, { toggle: false }).hide();
+                    }
+                });
+            });
+        }
     }
 
     /* ── Hero video: opt in rather than always ─────────────────── */

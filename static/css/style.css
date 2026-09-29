@@ -46,6 +46,8 @@ html[lang="fr"] {
 html {
     overflow-x: hidden;
     max-width: 100%;
+    /* Anchor jumps (#visit, #events) land below the fixed navbar. */
+    scroll-padding-top: 5.5rem;
 }
 
 body {

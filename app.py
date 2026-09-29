@@ -92,7 +92,18 @@ def inject_globals():
         'gmaps_url': content.gmaps_url(),
         'whatsapp_url': content.whatsapp_url,
         'current_year': date.today().year,
+        'static_v': static_v,
     }
+
+
+def static_v(filename):
+    """Static URL with the file's mtime appended, so browsers refetch it after every change."""
+    path = os.path.join(app.static_folder, filename)
+    try:
+        version = int(os.path.getmtime(path))
+    except OSError:
+        version = 0
+    return url_for('static', filename=filename, v=version)
 
 
 def available_widths(category, slug):
