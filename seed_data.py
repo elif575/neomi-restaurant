@@ -147,11 +147,11 @@ def resolve_new_password(prompt_if_missing):
 # every reader takes the first row it finds for that weekday.
 DEFAULT_HOURS = [
     # (day_of_week, open, close, open2, close2, is_closed) - 0 = Sunday
-    (0, '16:00', '20:00', None, None, False),        # Sunday
-    (1, '16:00', '20:00', None, None, False),        # Monday
-    (2, '16:00', '20:00', None, None, False),        # Tuesday
-    (3, '16:00', '20:00', None, None, False),        # Wednesday
-    (4, '16:00', '20:00', None, None, False),        # Thursday
+    (0, '16:00', '22:00', None, None, False),        # Sunday
+    (1, '16:00', '22:00', None, None, False),        # Monday
+    (2, '16:00', '22:00', None, None, False),        # Tuesday
+    (3, '16:00', '22:00', None, None, False),        # Wednesday
+    (4, '16:00', '22:00', None, None, False),        # Thursday
     (5, None, None, None, None, True),               # Friday: closed
     (6, None, None, None, None, True),               # Saturday: Shabbat
 ]

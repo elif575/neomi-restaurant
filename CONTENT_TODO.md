@@ -12,7 +12,8 @@ Done:
 | Field | Value | Where it shows |
 |---|---|---|
 | `phone_display` / `phone_tel` | `09-7730201` | Footer, menu, hero call button |
-| `mobile_display` / `mobile_tel` | `052-708-1255` | Under the landline everywhere; the mobile bar calls this one |
+| `mobile_display` / `mobile_tel` | `054-445-2833` | Under the landline everywhere; the mobile bar calls this one |
+| `mobile2_display` / `mobile2_tel` | `052-708-1255` | Right after the first mobile; `None` hides it |
 | `whatsapp` | `972544452833` | WhatsApp buttons (events enquiry, footer) |
 | `address_he` / `address_fr` | Hotel Blue Weiss, Netanya | Footer, "how to get here" |
 | `instagram` / `facebook` | set | Footer icons |
@@ -31,7 +32,7 @@ restaurant in Google Maps and copying the numbers.
 
 ## 2. Opening hours — done
 
-Sunday–Thursday 16:00–20:00, Friday and Saturday closed.
+Sunday–Thursday 16:00–22:00, Friday and Saturday closed.
 
 **Hours live in the database, not in a file.** `DEFAULT_HOURS` in
 `seed_data.py` is only used to fill an empty table — editing it does nothing

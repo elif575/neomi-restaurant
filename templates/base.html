@@ -110,6 +110,9 @@
                     {% if r.mobile_tel %}
                     <p><a href="tel:{{ r.mobile_tel }}"><i class="bi bi-phone-fill"></i> {{ r.mobile_display }}</a></p>
                     {% endif %}
+                    {% if r.mobile2_tel %}
+                    <p><a href="tel:{{ r.mobile2_tel }}"><i class="bi bi-phone-fill"></i> {{ r.mobile2_display }}</a></p>
+                    {% endif %}
                     <p><a href="{{ whatsapp_url() }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> {{ t('whatsapp_us') }}</a></p>
                     <p><i class="bi bi-geo-alt-fill"></i> {{ r.address_he if lang == 'he' else r.address_fr }}</p>
                     <div class="footer-map-links">
@@ -148,6 +151,9 @@
             </nav>
             <p class="footer-legal">
                 &copy; {{ current_year }} {{ t('brand_name') }} · {{ t('footer_rights') }}
+            </p>
+            <p class="footer-legal" dir="ltr">
+                This website was created with ❤️ by <a href="mailto:fuchs.eli@gmail.com">Eli</a>
             </p>
         </div>
     </footer>

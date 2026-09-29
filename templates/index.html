@@ -113,7 +113,7 @@
                         <h2>{{ t('table_open_title') }}</h2>
                         <p>{{ t('table_open_text') }}</p>
                     </div>
-                    <span class="table-open-price">{{ t('table_open_price') }}</span>
+                    <p class="table-open-price"><span class="table-open-amount">{{ t('table_open_price') }}</span><span class="table-open-per">{{ t('table_open_per') }}</span></p>
                 </div>
 
                 <div class="salatim-thumbs">
@@ -316,6 +316,9 @@
                     <a href="tel:{{ r.phone_tel }}"><i class="bi bi-telephone-fill"></i> {{ r.phone_display }}</a>
                     {% if r.mobile_tel %}
                     <a href="tel:{{ r.mobile_tel }}"><i class="bi bi-phone-fill"></i> {{ r.mobile_display }}</a>
+                    {% endif %}
+                    {% if r.mobile2_tel %}
+                    <a href="tel:{{ r.mobile2_tel }}"><i class="bi bi-phone-fill"></i> {{ r.mobile2_display }}</a>
                     {% endif %}
                     <a href="{{ whatsapp_url() }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> {{ t('whatsapp_us') }}</a>
                 </div>

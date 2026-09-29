@@ -1041,14 +1041,41 @@ a.kosher-chip:hover, a.kosher-chip:focus-visible {
     margin-bottom: 0.35rem;
 }
 .table-open-text p { margin: 0; color: var(--ink-soft); font-size: 0.98rem; font-weight: 300; }
+/* A round stamp, not a pill - a filled chip read as a button. */
 .table-open-price {
-    background: var(--burgundy);
-    color: var(--gold-pale);
-    font-weight: 700;
-    border-radius: 999px;
-    padding: 0.5rem 1.35rem;
+    flex: 0 0 auto;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid var(--gold);
+    outline: 1px solid var(--gold);
+    outline-offset: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    color: var(--burgundy);
+    transform: rotate(-8deg);
     white-space: nowrap;
 }
+.table-open-amount {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 800;
+}
+.table-open-per {
+    margin-top: 0.3rem;
+    padding-top: 0.3rem;
+    border-top: 1px solid var(--gold);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--burgundy-soft);
+    letter-spacing: 0.02em;
+}
+
 
 .menu-section { padding-block: 3rem; }
 

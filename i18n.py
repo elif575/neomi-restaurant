@@ -269,7 +269,7 @@ TRANSLATIONS = {
     "cat_appetizer": {"he": "מנות ראשונות", "fr": "Entrées"},
     "cat_main": {"he": "עיקריות", "fr": "Plats principaux"},
     "cat_grill": {"he": "בשרים", "fr": "Grillades & Viandes"},
-    "cat_fish": {"he": "דגים", "fr": "Poissons & Spécialités Tunisiennes"},
+    "cat_fish": {"he": "דגים מהים", "fr": "Poissons & Spécialités Tunisiennes"},
     "cat_drink": {"he": "שתייה", "fr": "Boissons & Bières"},
     "cat_dessert": {"he": "קינוחים", "fr": "Desserts"},
 
@@ -280,7 +280,8 @@ TRANSLATIONS = {
         "he": "מבחר סלטי הבית מוגש לשולחן בתחילת הארוחה.",
         "fr": "Une sélection de salades maison est servie à table en début de repas.",
     },
-    "table_open_price": {"he": "12 ₪ לסועד", "fr": "12 ₪ par personne"},
+    "table_open_price": {"he": "12 ₪", "fr": "12 ₪"},
+    "table_open_per": {"he": "לסועד", "fr": "par personne"},
 
     "sides_note": {
         "he": "כל המנות מוגשות עם תוספת לבחירה: אורז | צ׳יפס | שעועית ירוקה",

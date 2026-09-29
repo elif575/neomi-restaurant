@@ -19,8 +19,12 @@ RESTAURANT = {
 
     # Mobile. Shown under the landline everywhere the landline appears -
     # on a phone it is the number that actually gets answered.
-    "mobile_display": "052-708-1255",
-    "mobile_tel": "+972527081255",
+    "mobile_display": "054-445-2833",
+    "mobile_tel": "+972544452833",
+
+    # Second mobile, listed right after the first one. None hides it.
+    "mobile2_display": "052-708-1255",
+    "mobile2_tel": "+972527081255",
 
     # WhatsApp number in international format, no + or dashes
     "whatsapp": "972544452833",
